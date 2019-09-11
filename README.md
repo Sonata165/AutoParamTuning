@@ -15,13 +15,14 @@
   
 ## 2.目录结构  
   
-> README.md  
-> knowledge: 包含各个数据集特征和最优参数组成的新数据集  
-> > KnowledgePrepare.py: 对database中的数据集计算特征和最优参数，保存到下面三个csv文件  
+README.md  
+knowledge: 包含各个数据集特征和最优参数组成的新数据集  
+    KnowledgePrepare.py: 对database中的数据集计算特征和最优参数，保存到下面三个csv文件  
 > > NetworkPrepare.py: 训练神经网络，保存到system/network中  
 > > Svm.csv  
 > > ElasticNet.csv  
 > > Gmm.csv  
+
 > system: 包含调参器主体  
 >>AutoParamTuning.py: 客户端  
 >>FeatureCalc.py: 特征计算器  
