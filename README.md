@@ -17,8 +17,7 @@
   
 >README.md  
 >knowledge: 包含各个数据集特征和最优参数组成的新数据集  
->>KnowledgePrepare.py: 对database中的数据集计算特征和最优参数，
->>>保存到下面三个csv文件  
+>>KnowledgePrepare.py: 对database中的数据集计算特征和最优参数，保存到下面三个csv文件  
 >>NetworkPrepare.py: 训练神经网络，保存到system/network中  
 >>Svm.csv  
 >>ElasticNet.csv  
@@ -38,8 +37,7 @@
 >>>AAA.csv 结果使用csv保存，便于处理  
 >evaluation: 评估调参结果的代码  
 >>KnowledgeEvaluate.py: 对knowledge中的数据集训练神经网络，并进行交叉验证，看看拟合优度  
->>ResultEvaluate.py: 使用默认参数、网格搜索的参数、我们得到的参数分别行，  
->>>生成下面的评估结果  
+>>ResultEvaluate.py: 使用默认参数、网格搜索的参数、我们得到的参数分别行，  生成下面的评估结果  
 >>EvaluationResult.csv: 评估结果  
   
   
