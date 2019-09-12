@@ -10,3 +10,14 @@ database目录结构如README中所示
 	第一列不是编号，从第一列开始就是数据
 '''
 
+def get_param_name(alg_name):
+	'''
+	返回待调的超参数的名称
+	Parameters:
+	  alg_name - String类型，待调参算法名称，'SVM','ElasticNet','GMM'中的一个
+	Returns:
+	  一个列表，包含该算法要调的参数的名称。
+	  要求列表大小和神经网络输出数目总数保持一致，顺序也和神经网络输出保持一致
+	'''
+	return ['a']
+

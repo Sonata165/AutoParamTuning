@@ -1,0 +1,7 @@
+FeatureName,iris1.csv,iris2.csv
+attribute_num,5.0,5.0
+discrete_ratio,0.2,0.2
+entropy,1.0,1.0
+multi_inf,6.596307314753105,6.62385618977474
+size,100.0,100.0
+totcorr,7.417775834883971,7.667488631692429
