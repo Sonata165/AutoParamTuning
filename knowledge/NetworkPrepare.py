@@ -28,13 +28,12 @@ def reg_net(input_shape):
     return model
 
 
-def build_SVM_Kernel_nn(input_shape, output_dim):
+def classify_net(input_shape,output_dim):
     """
-    生成预测SVM超参数Kernel的神经网
-    :param input_shape: 输入维度，元组，如有6个feature，则input_shape=(6,)
-    :param output_dim: 输出维度，int，分类问题中的总类别数，如有4种核函数，则output=4
-                        输出如下：[0,1,0,0]，值为1的为预测的kernel，列表按kernel名称的字典序排列
-    :return: compile好的keras模型
+    创建一个分类Keras模型
+    :param input_shape: 输入维度，元组，(特征数,)
+    :param output_dim: 总类别数
+    :return: compile好的模型
     """
     x_input = Input(input_shape)
     x = Dense_withBN_Dropout(x_input, 16)
@@ -48,6 +47,16 @@ def build_SVM_Kernel_nn(input_shape, output_dim):
         metrics=['mae', 'mse']  # 评估指标: [平均绝对误差, 均方误差]
     )
     return model
+
+def build_SVM_Kernel_nn(input_shape, output_dim):
+    """
+    生成预测SVM超参数Kernel的神经网
+    :param input_shape: 输入维度，元组，如有6个feature，则input_shape=(6,)
+    :param output_dim: 输出维度，int，分类问题中的总类别数，如有4种核函数，则output=4
+                        输出如下：[0,1,0,0]，值为1的为预测的kernel，列表按kernel名称的字典序排列
+    :return: compile好的keras模型
+    """
+    return classify_net(input_shape, output_dim)
 
 
 def build_SVM_C_nn(input_shape):
@@ -86,8 +95,24 @@ def build_ElasticNet_l1ratio_nn(input_shape):
     return reg_net(input_shape)
 
 
+def build_GMM_ncomponents(input_shape,output_dim):
+    """
+    生成预测GMM超参数n_components的神经网
+    :param input_shape: 输入维度，元组
+    :param output_dim: 总类别数，int
+    :return: compile好的Keras模型
+    """
+    return classify_net(input_shape, output_dim)
 
 
+def build_GMM_covariance(input_shape, output_dim):
+    """
+    生成预测GMM超参数covariance的神经网
+    :param input_shape: 输入维度，元组
+    :param output_dim: 总类别数，int
+    :return: compile好的Keras模型
+    """
+    return classify_net(input_shape, output_dim)
 
 
 def Dense_withBN_Dropout(input, units, activation=None):
@@ -136,3 +161,4 @@ def train_nn(model, x_train, y_train, epochs, model_name):
 def plot_history(history):
     # TODO
     pass
+
