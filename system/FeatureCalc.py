@@ -12,7 +12,7 @@ FEATURENAMES = [
 	'attribute_num',
 	'discrete_ratio',
 	'entropy',
-	'multi_inf',
+	'joint_inf',
 	'size',
 	'totcorr'
 ]
@@ -28,11 +28,11 @@ def calculate_features(dataset):
 	attribute_num = calculate_attribute_num(dataset)
 	discrete_ratio = calculate_discrete_ratio(dataset)
 	entropy = calculate_entropy(dataset)
-	multi_inf = calculate_multi_inf(dataset)
+	joint_inf = calculate_joint_inf(dataset)
 	size = calculate_size(dataset)
 	totcorr = calculate_totcorr(dataset)
 
-	ret = [attribute_num, discrete_ratio, entropy, multi_inf, size, totcorr]
+	ret = [attribute_num, discrete_ratio, entropy, joint_inf, size, totcorr]
 	return ret
 
 
@@ -64,7 +64,7 @@ def calculate_discrete_ratio(dataset):
 	"""
 	discrete_count = 0
 	for i in dataset.columns:
-		if len(dataset[i].value_counts()) <= DISCRETE_BOUND:
+		if len(dataset[i].value_counts()) == 2:
 			discrete_count += 1
 	return discrete_count / dataset.columns.size
 
@@ -82,8 +82,7 @@ def calculate_attribute_num(dataset):
 
 def calculate_entropy(dataset):
 	"""
-	计算指定数据集的信息熵 -Sigma(P(yi)log_2(P(yi)))
-	# TODO Buggy
+	计算指定数据集的信息熵(只看标签一栏) -Sigma(P(yi)log_2(P(yi)))  加和次数等于标签数目
 	Parameters:
 	  dataset - 待计算的数据集
 	Returns:
@@ -98,9 +97,9 @@ def calculate_entropy(dataset):
 	return entropy
 
 
-def calculate_multi_inf(dataset):
+def calculate_joint_inf(dataset):
 	"""
-	计算指定数据集的联合信息熵 -Sigma(P(x1,x2)log_b(P(x1,x2)))
+	计算指定数据集的联合信息熵 -Sigma(P(x1,x2)log_2(P(x1,x2)))
 	TODO Buggy
 	Parameters:
 	  dataset - 待计算的数据集
@@ -114,12 +113,15 @@ def calculate_multi_inf(dataset):
 	lines = pd.Series(lines)
 	dic = lines.value_counts()		# 它保存着每行的toString和不同行的出现次数
 	b = len(dic)					# b表示有多少种不同的行
-	multi_inf = 0
+	joint_inf = 0
 	n = len(dataset)
 	for i in dic:
 		pr = i / n					# 该行出现的概率
-		multi_inf -= pr * np.log2(pr)
-	return multi_inf
+		joint_inf -= pr * np.log2(pr)
+	return joint_inf
+
+
+
 
 
 def calculate_totcorr(dataset):
