@@ -8,13 +8,10 @@ Author: 欧龙燊
 保存格式：csv文件，第一列为数据集名称，第一行为最优参数名称
 '''
 
-import os
-import numpy as np
-import pandas as pd
-import sys
-from tensorflow import keras
+import unittest
+from Mathfunc import *
 
-sys.path.append('knowledge')
+sys.path.append('../knowledge')
 
 import FeatureCalc
 import FurtherOpt
@@ -50,20 +47,20 @@ def main():
 		feature_df[filename] = features
 	print('用户数据集特征：')
 	print(feature_df)
-	feature_df.to_csv('system/output/Features.csv', index=False)
+	feature_df.to_csv('./output/Features.csv', index=False)
 
 	''' 将特征送入神经网络计算得到预测结果 '''
 	# TODO 这里按照神经网络只有一个输出来写
 	predicted_df = pd.DataFrame()
 	param_names = KnowledgePrepare.get_param_name(alg_name)
 	predicted_df['ParamName'] = param_names
-	model = keras.models.load_model('system/network/' + model_path) # 载入神经网络
+	model = keras.models.load_model('network/' + model_path) # 载入神经网络
 	for filename in datasets:
 		predicted_param = model.predict(np.expand_dims(feature_df[filename], 0))
 		predicted_df[filename] = predicted_param
 	print('神经网络预测结果为：')
 	print(predicted_df)
-	predicted_df.to_csv('system/output/InitialResult.csv')
+	predicted_df.to_csv('./output/InitialResult.csv')
 
 	''' 进一步优化预测结果，得到最终结果 '''
 	optimized_df = pd.DataFrame()
@@ -73,7 +70,7 @@ def main():
 		optimized_df[filename] = optimized_param
 	print('进一步优化结果为：')
 	print(optimized_df)
-	optimized_df.to_csv('system/output/FinalResult.csv')
+	optimized_df.to_csv('./output/FinalResult.csv')
 
 	print('程序结束！')
 
@@ -88,7 +85,7 @@ def read_dataset():
 	  数据集类型为pandas.Dataframe
 	'''
 	print('读取数据集')
-	INPUTPATH = 'system/input/'
+	INPUTPATH = './input/'
 	files = os.listdir(INPUTPATH)
 	datasets = {}
 	for file in files:
