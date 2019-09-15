@@ -10,7 +10,7 @@ database目录结构如README中所示
 	第一列不是编号，从第一列开始就是数据
 """
 
-from system.FeatureCalc import calculate_features
+from system.FeatureCalc import *
 import os
 import pandas as pd
 from sklearn.model_selection import GridSearchCV
@@ -20,7 +20,7 @@ from sklearn.mixture import GaussianMixture
 import numpy as np
 
 
-def get_feature(modelName, param_g=None):
+def get_feature(modelName, database_dir='../database/', param_g=None):
     """
     获取特征-标签数据
     返回最优参数的同时保存数据，格式为：
@@ -34,35 +34,36 @@ def get_feature(modelName, param_g=None):
     :return: 所有特征的列表
     """
 
-    database_dir = '../database/' + modelName
-    dir_list = os.listdir(database_dir)
-    feature = np.empty((0,))
+    dataset_dir = database_dir + modelName + "/"
+    dir_list = os.listdir(dataset_dir)
+    feature = None
     gs = {}
     gs_list = []
     for p in dir_list:
-        path = os.path.join(database_dir, p)
+        path = os.path.join(dataset_dir, p)
         print("path: " + path)
         # 读取数据
         data = pd.read_csv(path)
-        # 计算数据集特征并合并存储
-        np.concatenate((feature, np.array(calculate_features(data)).transpose()), axis=-1)
-        # TODO:网格搜索数据准备
+        data = data.dropna()
         data = np.array(data)
         x_data = data[:, 0:-1]
-        y_data = data[:, -1]
+        y_data = (data[:, -1])
         # 网格搜索标签
         if modelName == "SVM":
             # 搜索精度
-            accuracy = 1000
+            accuracy = 1
             # 生成搜索范围
-            r = [i / accuracy for i in range(-10 * accuracy, 10 * accuracy, 1)]
+            r_gamma = [i / accuracy for i in range(0, 2 * accuracy, 1)]
+            r_C = [i / accuracy for i in range(1 * accuracy, 2 * accuracy, 1)]
             if param_g is None:
-                param_grid = {'kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'precomputed'], 'C': r,
-                              'gamma': r}
+                param_grid = {'kernel': ['linear'], 'C': r_C,
+                              'gamma': r_gamma}
             else:
                 param_grid = param_g
             model = SVC()
+            print("开始网格搜索")
             gs = GridSearchCV(model, param_grid=param_grid, refit=True, cv=5).fit(x_data, y_data)
+            print("网格搜索完成")
         elif modelName == 'ElasticNet':
             # 搜索精度
             accuracy = 100
@@ -71,11 +72,15 @@ def get_feature(modelName, param_g=None):
             r_l1 = [i / accuracy for i in range(0 * accuracy, 1 * accuracy, 1)]
             param_grid = {'alpha': r_alpha, 'l1_ratio': r_l1}
             model = ElasticNet()
-            gs = GridSearchCV(model, param_grid=param_grid, refit=True, cv=5).fit(x_data, y_data)
+            print("开始网格搜索")
+            gs = GridSearchCV(model, param_grid=param_grid, cv=5).fit(x_data, y_data)
+            print("网格搜索完成")
         elif modelName == 'GMM':
             param_grid = {'n_components': [1, 2, 3], 'covariance': ['full', 'tied', 'diag', 'spherical']}
             model = GaussianMixture()
-            gs = GridSearchCV(model, param_grid=param_grid, refit=True, cv=5).fit(x_data, y_data)
+            print("开始网格搜索")
+            gs = GridSearchCV(model, param_grid=param_grid, cv=5).fit(x_data, y_data)
+            print("网格搜索完成")
         else:
             print("模型名称输入错误！")
             return None
@@ -84,24 +89,39 @@ def get_feature(modelName, param_g=None):
         # 输出网格搜索结果
         print("best_params:\n" + str(gs.best_params_))
         print('best_score:\n' + str(gs.best_score_))
+    for p in dir_list:
+        path = os.path.join(dataset_dir, p)
+        print("path: " + path)
+        # 读取数据
+        data = pd.read_csv(path)
+        # 计算数据集特征并合并存储
+        temp = np.array(calculate_features(data))
+        if feature is None:
+            feature = temp.reshape(temp.shape[0], 1)
+        else:
+            feature = np.concatenate((feature, temp.reshape(temp.shape[0], 1)), axis=1)
     # 添加最优参数行
     args = get_param_name(modelName)
-    feature = pd.DataFrame(feature)
+    feature = pd.DataFrame(feature,  columns=[p for p in dir_list])
     param = []
     for g_dataset in gs_list:
         # example: g_dataset={"kernel":"rbf","C":0,"gamma":0}
         col = []
-        for k in g_dataset.values():
+        for k in g_dataset.best_params_.values():
             col.append(k)
         col = np.array(col).transpose()
         # 添加列
         param.append(col)
-    param = pd.DataFrame(np.array(param), index=[s for s in args], columns=[p for p in dir_list])
+    param = pd.DataFrame(np.array(param).transpose(), index=[s for s in args], columns=[p for p in dir_list])
     # 合并
     res = pd.concat([feature, param], axis=0, ignore_index=True)
+    # 添加FeatureName列
+    name = get_feature_name() + get_param_name(modelName)
+    name_col = pd.DataFrame(np.array(name).reshape((len(name), 1)))
+    res = pd.concat([name_col, res], axis=1, ignore_index=True)
     # 保存特征和超参数
-    pd.DataFrame(res, index=range(0, feature.shape[0]), columns=["FeatureName"] + [p for p in dir_list]).to_csv(
-        "/" + modelName + ".csv")
+    res.columns = ["FeatureName"] + [p for p in dir_list]
+    res.to_csv("knowledge/"+modelName + ".csv")
     return np.array(feature).tolist()
 
 

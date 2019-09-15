@@ -8,17 +8,18 @@ from keras import Model
 import keras
 
 
-def reg_net(input_shape):
+def reg_net(input_shape, activation=None):
     """
     生成单输出回归神经网
     :param input_shape: 输入维度，元组
+    :param activation: 激活函数，默认为None，如要指定激活函数，传入length为4的元组，元素为keras.layer中的激活函数层，如keras.layers.ReLU()
     :return: compile好的Keras模型
     """
     x_input = Input(input_shape)
-    x = Dense_withBN_Dropout(x_input, 16)
-    x = Dense_withBN_Dropout(x, 16)
-    x = Dense_withBN_Dropout(x, 4)
-    x = Dense_withBN_Dropout(x, 1)
+    x = Dense_withBN_Dropout(x_input, 16, activation)
+    x = Dense_withBN_Dropout(x, 16, activation)
+    x = Dense_withBN_Dropout(x, 4, activation)
+    x = Dense_withBN_Dropout(x, 1, activation)
     model = Model(inputs=[x_input], outputs=[x])
     model.compile(
         loss=keras.losses.mean_squared_error,
@@ -120,7 +121,7 @@ def Dense_withBN_Dropout(input, units, activation=None):
     全连接-BN层-激活层-Dropout层的神经元模块
     :param input: 输入
     :param units: 全连接层神经元个数
-    :param activation: 默认为None，则采用LeakyRelu激活函数，否则应传入Keras中激活函数的名字，如'softmax'
+    :param activation: 默认为None，采用LeakyRelu激活函数，否则应传入Keras中的激活函数，如keras.layers.ReLU()
     :return: tensor，神经元输出
     """
     x = Dense(units=units)(input)
@@ -128,7 +129,7 @@ def Dense_withBN_Dropout(input, units, activation=None):
     if activation is None:
         x = LeakyReLU(alpha=0.3)(x)
     else:
-        x = Activation(activation)(x)
+        x = activation(x)
     x = Dropout(rate=0.1)(x)
     return x
 
