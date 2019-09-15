@@ -43,7 +43,7 @@ class TestFeatureCalc(unittest.TestCase):
 
 		# 一个20行常规数据集，两类
 		dataset = read_dataset('test/system/input/Simple3.csv')
-		ans = calculate_entropy(dataset) # should be 2.3219
+		ans = calculate_entropy(dataset) # sho8uld be 2.3219
 		self.assertTrue(2.3218 < ans and ans < 2.3220)
 
 		# 10000行，10000类
@@ -56,7 +56,11 @@ class TestFeatureCalc(unittest.TestCase):
 		ans = calculate_joint_inf(dataset) # 2.5219
 		self.assertTrue(2.5218 < ans and ans < 2.5220)
 
-	def
+	def test_calculate_totcorr(self):
+		dataset = read_dataset('test/system/input/Simple5.csv')
+		ans = calculate_totcorr(dataset) # 0.4199
+		print(ans)
+		self.assertTrue(0.4198 < ans and ans < 0.4200)
 
 
 
