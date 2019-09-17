@@ -6,6 +6,8 @@
 from keras.layers import *
 from keras import Model
 import keras
+import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def reg_net(input_shape, activation=None):
@@ -29,7 +31,7 @@ def reg_net(input_shape, activation=None):
     return model
 
 
-def classify_net(input_shape,output_dim):
+def classify_net(input_shape, output_dim):
     """
     创建一个分类Keras模型
     :param input_shape: 输入维度，元组，(特征数,)
@@ -48,6 +50,7 @@ def classify_net(input_shape,output_dim):
         metrics=['mae', 'mse']  # 评估指标: [平均绝对误差, 均方误差]
     )
     return model
+
 
 def build_SVM_Kernel_nn(input_shape, output_dim):
     """
@@ -96,7 +99,7 @@ def build_ElasticNet_l1ratio_nn(input_shape):
     return reg_net(input_shape)
 
 
-def build_GMM_ncomponents(input_shape,output_dim):
+def build_GMM_ncomponents(input_shape, output_dim):
     """
     生成预测GMM超参数n_components的神经网
     :param input_shape: 输入维度，元组
@@ -159,7 +162,27 @@ def train_nn(model, x_train, y_train, epochs, model_name):
     return history
 
 
-def plot_history(history):
-    # TODO
-    pass
+def plot_history(history, param_name):
+    hist = pd.DataFrame(history.history)  # 将history从dict类型转换为DataFrame类型
+    print(hist)
+    hist['epoch'] = history.epoch  # 添加epoch列
 
+    plt.figure()
+    plt.xlabel('Epoch')
+    plt.ylabel('Mean Abs Error [' + param_name + ']')
+    plt.plot(hist['epoch'], hist['mean_absolute_error'],  # 画平均绝对误差图
+             label='Train Error')
+    plt.plot(hist['epoch'], hist['val_mean_absolute_error'],  # 画验证集平均绝对误差图
+             label='Val Error')
+    plt.legend()  # 添加图例
+    # plt.ylim([0,100])												# 设置y轴范围
+
+    plt.figure()
+    plt.xlabel('Epoch')
+    plt.ylabel('Mean Square Error [$' + param_name + '^2$]')
+    plt.plot(hist['epoch'], hist['mean_squared_error'],  # 画均方误差图
+             label='Train Error')
+    plt.plot(hist['epoch'], hist['val_mean_squared_error'],  # 画验证集均方误差图
+             label='Val Error')
+    plt.legend()  # 添加图例
+# plt.ylim([0,32000])											# 设置y轴范围
