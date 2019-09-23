@@ -63,7 +63,7 @@ def main():
 		predicted_df[filename] = predicted_param
 	print('神经网络预测结果为：')
 	print(predicted_df)
-	predicted_df.to_csv('system/output/InitialResult.csv')
+	predicted_df.to_csv('system/output/InitialResult.csv', index=False)
 
 	''' 进一步优化预测结果，得到最终结果 '''
 	optimized_df = pd.DataFrame()
@@ -73,7 +73,7 @@ def main():
 		optimized_df[filename] = optimized_param
 	print('进一步优化结果为：')
 	print(optimized_df)
-	optimized_df.to_csv('system/output/FinalResult.csv')
+	optimized_df.to_csv('system/output/FinalResult.csv', index=False)
 
 	print('程序结束！')
 
