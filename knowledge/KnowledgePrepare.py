@@ -11,7 +11,11 @@ database目录结构如README中所示
 	第一列不是编号，从第一列开始就是数据
 """
 
-from system.FeatureCalc import *
+import sys
+
+sys.path.append('system')
+
+from FeatureCalc import *
 import os
 import pandas as pd
 from sklearn.model_selection import GridSearchCV
@@ -20,6 +24,8 @@ from sklearn.linear_model import ElasticNet
 from sklearn.mixture import GaussianMixture
 import numpy as np
 
+def main():
+	get_feature('SVM', database_dir='../database/', param_g={'kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'precomputed'], 'C': [1, 10, 50, 10]})
 
 def get_feature(modelName, database_dir='../database/', param_g=None):
     """
@@ -31,7 +37,9 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
     :param modelName: 要优化的模型，字符串，区分大小写，例：'SVM','ElasticNet','GaussianMixture
     :param param_g: 网格搜索范围， 默认值为None，并使用内置的搜索范围，格式如下：
                     例:SVM
-                    {'kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'precomputed'], 'C': [1, 10, 50, 10]}
+                    {'kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'precomputed'],
+                     'C': [1, 10, 50, 10],
+                     'gamma': r_gamma}
     :return: 所有特征的列表
     """
 
@@ -40,15 +48,19 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
     feature = None
     gs = {}
     gs_list = []
+
     for p in dir_list:
-        path = os.path.join(dataset_dir, p)
+        path = dataset_dir + p
         print("path: " + path)
         # 读取数据
         data = pd.read_csv(path)
-        data = data.dropna()
+        print(data)
         data = np.array(data)
         x_data = data[:, 0:-1]
         y_data = (data[:, -1])
+
+        print(x_data)
+
         # 网格搜索标签
         if modelName == "SVM":
             # 搜索精度
@@ -57,8 +69,7 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             r_gamma = [i / accuracy for i in range(0, 2 * accuracy, 1)]
             r_C = [i / accuracy for i in range(1 * accuracy, 2 * accuracy, 1)]
             if param_g is None:
-                param_grid = {'kernel': ['linear'], 'C': r_C,
-                              'gamma': r_gamma}
+                param_grid = {'kernel': ['linear'], 'C': r_C, 'gamma':1}
             else:
                 param_grid = param_g
             model = SVC()
@@ -90,6 +101,7 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
         # 输出网格搜索结果
         print("best_params:\n" + str(gs.best_params_))
         print('best_score:\n' + str(gs.best_score_))
+
     for p in dir_list:
         path = os.path.join(dataset_dir, p)
         print("path: " + path)
@@ -101,10 +113,12 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             feature = temp.reshape(temp.shape[0], 1)
         else:
             feature = np.concatenate((feature, temp.reshape(temp.shape[0], 1)), axis=1)
+
     # 添加最优参数行
     args = get_param_name(modelName)
     feature = pd.DataFrame(feature,  columns=[p for p in dir_list])
     param = []
+
     for g_dataset in gs_list:
         # example: g_dataset={"kernel":"rbf","C":0,"gamma":0}
         col = []
@@ -113,16 +127,17 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
         col = np.array(col).transpose()
         # 添加列
         param.append(col)
+
     param = pd.DataFrame(np.array(param).transpose(), index=[s for s in args], columns=[p for p in dir_list])
     # 合并
     res = pd.concat([feature, param], axis=0, ignore_index=True)
     # 添加FeatureName列
-    name = get_feature_name() + get_param_name(modelName)
+    name = get_feature_name(modelName) + get_param_name(modelName)
     name_col = pd.DataFrame(np.array(name).reshape((len(name), 1)))
     res = pd.concat([name_col, res], axis=1, ignore_index=True)
     # 保存特征和超参数
     res.columns = ["FeatureName"] + [p for p in dir_list]
-    res.to_csv("../knowledge/"+modelName + ".csv")
+    res.to_csv("knowledge/" + modelName + ".csv")
     return np.array(feature).tolist()
 
 
@@ -142,3 +157,6 @@ def get_param_name(alg_name):
     elif alg_name == "GMM":
         return ["n_components", "covariance"]
     return None
+
+if __name__ == '__main__':
+	main()
