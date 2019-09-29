@@ -8,6 +8,8 @@ import pandas as pd
 import shutil
 from sklearn.svm import SVC
 from sklearn.linear_model import ElasticNet
+from sklearn.mixture import GaussianMixture as GMM
+from sklearn.metrics import adjusted_rand_score
 from sklearn.model_selection import cross_val_score
 
 SVM_THRESHOLD = 0.7 # 当SVM分类正确率小于该值时，认为该数据集不合格
@@ -39,12 +41,11 @@ def svm_filter():
     OFFSPEC_PATH = '../database/_OffSpec/SVM/'
     datasets = read_dataset(DATASET_PATH)
     for filename in datasets:
-        print(filename)
+        print(filename, end='')
         result = svm_cross_validation(datasets[filename])
         print("得分:", result)
         if result < SVM_THRESHOLD:
             shutil.move(DATASET_PATH + filename, OFFSPEC_PATH + filename)
-        print()
 
 def elastic_net_filter():
     '''
@@ -54,18 +55,25 @@ def elastic_net_filter():
     OFFSPEC_PATH = '../database/_OffSpec/ElasticNet/'
     datasets = read_dataset(DATASET_PATH)
     for filename in datasets:
-        print(filename)
+        print(filename, end='')
         result = elastic_net_cross_validation(datasets[filename])
         print("得分:", result)
         if result < ELASTICNET_THRESHOLD:
             shutil.move(DATASET_PATH + filename, OFFSPEC_PATH + filename)
-        print()
 
 def gmm_filter():
     '''
     筛选GMM数据集
     '''
-    print('TODO')
+    DATASET_PATH = '../database/ElasticNet/'
+    OFFSPEC_PATH = '../database/_OffSpec/ElasticNet/'
+    datasets = read_dataset(DATASET_PATH)
+    for filename in datasets:
+        print(filename, end='')
+        result = gmm_score(datasets[filename])
+        print("得分:", result)
+        if result < ELASTICNET_THRESHOLD:
+            shutil.move(DATASET_PATH + filename, OFFSPEC_PATH + filename)
 
 def svm_cross_validation(dataset):
     '''
@@ -73,7 +81,7 @@ def svm_cross_validation(dataset):
     Parameters:
       待跑SVM的数据集，格式：pandas.DataFrame
     Returns:
-      数据集10折交叉验证得分，评判标准：正确率
+      数据集10折交叉验证得分，使用默认的SVM超参数，评估标准：正确率
     '''
     y = dataset.pop('Label')
     X = dataset
@@ -90,7 +98,7 @@ def elastic_net_cross_validation(dataset):
     Parameters:
       待运行ElasticNet的数据集，格式：pandas.DataFrame
     Returns:
-      数据集10折交叉验证得分，评判标准：r2
+      数据集10折交叉验证得分，使用默认的ElasticNet超参数，评估标准：r2
     '''
     print()
 
@@ -102,6 +110,22 @@ def elastic_net_cross_validation(dataset):
     scores = cross_val_score(model, X, y, cv=10, scoring='r2')
 
     ret = scores.mean()
+    return ret
+
+def gmm_score(dataset):
+    '''
+    GMM聚类效果评估
+    Parameters:
+      待运行GMM的数据集，格式：pandas.DataFrame
+    Returns:
+      数据集聚类结果，使用已知的簇的个数，其他超参数使用默认值，评估标准：adjusted_rand_score
+    '''
+    y_true = dataset.pop('Label')
+    X = dataset
+
+    y_pred = GMM(n_components=3, covariance_type='full').fit_predict(X)
+
+    ret = adjusted_rand_score(y_true, y_pred)
     return ret
 
 def read_dataset(path):
