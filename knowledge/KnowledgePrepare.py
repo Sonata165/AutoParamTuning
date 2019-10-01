@@ -11,11 +11,7 @@ database目录结构如README中所示
 	第一列不是编号，从第一列开始就是数据
 """
 
-import sys
-
-sys.path.append('system')
-
-from FeatureCalc import *
+from system.FeatureCalc import *
 import os
 import pandas as pd
 from sklearn.model_selection import GridSearchCV
@@ -24,8 +20,11 @@ from sklearn.linear_model import ElasticNet
 from sklearn.mixture import GaussianMixture
 import numpy as np
 
+"""
 def main():
-	get_feature('SVM', database_dir='../database/', param_g={'kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'precomputed'], 'C': [1, 10, 50, 10]})
+    get_feature('SVM', database_dir='../database/', param_g={'kernel': ['linear', 'rbf', 'poly', 'sigmoid'], 'C': [1, 10, 50, 10]})
+"""
+
 
 def get_feature(modelName, database_dir='../database/', param_g=None):
     """
@@ -37,7 +36,7 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
     :param modelName: 要优化的模型，字符串，区分大小写，例：'SVM','ElasticNet','GaussianMixture
     :param param_g: 网格搜索范围， 默认值为None，并使用内置的搜索范围，格式如下：
                     例:SVM
-                    {'kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'precomputed'],
+                    {'kernel': ['linear', 'rbf', 'poly', 'sigmoid'],
                      'C': [1, 10, 50, 10],
                      'gamma': r_gamma}
     :return: 所有特征的列表
@@ -46,7 +45,6 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
     dataset_dir = database_dir + modelName + "/"
     dir_list = os.listdir(dataset_dir)
     feature = None
-    gs = {}
     gs_list = []
 
     for p in dir_list:
@@ -54,12 +52,12 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
         print("path: " + path)
         # 读取数据
         data = pd.read_csv(path)
-        print(data)
+        # print(data)
         data = np.array(data)
         x_data = data[:, 0:-1]
         y_data = (data[:, -1])
 
-        print(x_data)
+        # print(x_data)
 
         # 网格搜索标签
         if modelName == "SVM":
@@ -69,7 +67,8 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             r_gamma = [i / accuracy for i in range(0, 2 * accuracy, 1)]
             r_C = [i / accuracy for i in range(1 * accuracy, 2 * accuracy, 1)]
             if param_g is None:
-                param_grid = {'kernel': ['linear'], 'C': r_C, 'gamma':1}
+                # param_grid = {'kernel': ['linear'], 'C': r_C, 'gamma':1}
+                param_grid = {'kernel': ['linear'], 'C': r_C, 'gamma': r_gamma}
             else:
                 param_grid = param_g
             model = SVC()
@@ -116,14 +115,39 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
 
     # 添加最优参数行
     args = get_param_name(modelName)
-    feature = pd.DataFrame(feature,  columns=[p for p in dir_list])
+    if modelName == "SVM":
+        k = args[-1]
+        args[-1] = k + '0'
+        args.append(k + '1')
+        args.append(k + '2')
+        args.append(k + '3')
+    elif modelName == "GMM":
+        # TODO: process for GMM
+        pass
+    feature = pd.DataFrame(feature, columns=[p for p in dir_list])
     param = []
-
+    param_name = [k for k in gs_list[0].best_params_]
     for g_dataset in gs_list:
-        # example: g_dataset={"kernel":"rbf","C":0,"gamma":0}
+        # example: g_dataset={""C":0,"gamma":0,kernel":"rbf"}
         col = []
         for k in g_dataset.best_params_.values():
-            col.append(k)
+            # one-hot encode: ['linear', 'rbf', 'poly', 'sigmoid']
+            code = [0, 0, 0, 0]
+            # TODO:one-hot for GMM
+            if k == 'linear':
+                code[0] = 1
+                col += code
+            elif k == 'rbf':
+                code[1] = 1
+                col += code
+            elif k == 'poly':
+                code[2] = 1
+                col += code
+            elif k == 'sigmoid':
+                code[3] = 1
+                col += code
+            else:
+                col.append(k)
         col = np.array(col).transpose()
         # 添加列
         param.append(col)
@@ -132,12 +156,13 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
     # 合并
     res = pd.concat([feature, param], axis=0, ignore_index=True)
     # 添加FeatureName列
-    name = get_feature_name(modelName) + get_param_name(modelName)
+    name = get_feature_name(modelName) + param_name
     name_col = pd.DataFrame(np.array(name).reshape((len(name), 1)))
     res = pd.concat([name_col, res], axis=1, ignore_index=True)
     # 保存特征和超参数
     res.columns = ["FeatureName"] + [p for p in dir_list]
-    res.to_csv("knowledge/" + modelName + ".csv")
+    res = pd.DataFrame(res.values.T, index=res.columns, columns=res.index)
+    res.to_csv("knowledge/" + modelName + ".csv", index=False, header=None)
     return np.array(feature).tolist()
 
 
@@ -151,12 +176,14 @@ def get_param_name(alg_name):
       要求列表大小和神经网络输出数目总数保持一致，顺序也和神经网络输出保持一致
     """
     if alg_name == "SVM":
-        return ["kernel", "C", "gamma"]
+        return ["C", "gamma", "kernel"]
+    # TODO:确保顺序正确性
     elif alg_name == "ElasticNet":
         return ["alpha", "l1_ratio"]
     elif alg_name == "GMM":
         return ["n_components", "covariance"]
     return None
 
+
 if __name__ == '__main__':
-	main()
+    main()

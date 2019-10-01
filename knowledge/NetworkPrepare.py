@@ -3,11 +3,43 @@
 将训练好的模型保存至system/network下的三个.h5文件中，请用keras的model.save('路径名')
 '''
 
+import multiprocessing as mp
 from keras.layers import *
 from keras import Model
 import keras
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+import os
+from sklearn.preprocessing import StandardScaler
+
+
+def read_data(modelName, path="knowledge/"):
+    """
+    从/knowledge/modelName.csv读取数据
+    :param modelName: 模型名称，读取文件的名称
+    :param path: 要读取的文件所在的路径
+    :return: train_X, train_y, label顺序按照KnowledgePrepare中get_param_name的顺序，x做标准化处理
+    """
+    raw = pd.read_csv(path + modelName + ".csv")
+    if modelName == "SVM":
+        y = raw.values[:, -6:]
+        x = StandardScaler().fit_transform(raw.values[:, :-6])
+    elif modelName == "ElasticNet":
+        y = raw.values[:, -2:]
+        x = StandardScaler().fit_transform(raw.values[:, :-6])
+    elif modelName == "GMM":
+        # TODO: 确定GMM的总label数目
+        y = raw.values[:, -6:]
+        x = StandardScaler().fit_transform(raw.values[:, :-6])
+    else:
+        return None, None
+    # y = np.array(y)
+
+    """
+    train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2)
+    return train_x, test_x, train_y, test_y
+    """
+    return x, y
 
 
 def reg_net(input_shape, activation=None):
@@ -42,7 +74,7 @@ def classify_net(input_shape, output_dim):
     x = Dense_withBN_Dropout(x_input, 16)
     x = Dense_withBN_Dropout(x, 16)
     x = Dense_withBN_Dropout(x, 4)
-    x = Dense_withBN_Dropout(x, output_dim, activation='softmax')
+    x = Dense_withBN_Dropout(x, output_dim, activation=Softmax())
     model = Model(inputs=[x_input], outputs=[x])
     model.compile(
         loss=keras.losses.categorical_crossentropy,
@@ -133,7 +165,7 @@ def Dense_withBN_Dropout(input, units, activation=None):
         x = LeakyReLU(alpha=0.3)(x)
     else:
         x = activation(x)
-    x = Dropout(rate=0.1)(x)
+    # x = Dropout(rate=0.1)(x)
     return x
 
 
@@ -146,20 +178,87 @@ class PrintDot(keras.callbacks.Callback):  # 一个回调函数
             print('')
 
 
-def train_nn(model, x_train, y_train, epochs, model_name):
+def train_nn(model, x_train, y_train, epochs, model_name, save_path='../system/network/'):
     """
-    训练神经网，保存神经网，返回history
+    训练神经网，保存神经网
+    使用多进程运行，训练结束后将训练好的模型保存到h5文件，
+    并画出训练历史
     :param model: 要训练的模型
     :param x_train: x
-    :param y_train: y   形式:[c,gamma]
+    :param y_train: y
     :param epochs: 起始训练轮数
-    :param model_name: 拟合的算法名字
-    :return: history
+    :param model_name: string, 要保存的名字，建议命名为:算法名_超参数名
+    :param save_path: 保存模型的路径，例如：'../system/network/'
+    :return: None
     """
+    if model_name == "SVM_C":
+        y_train = y_train[:, 0]
+    elif model_name == "SVM_gamma":
+        y_train = y_train[:, 1]
+    elif model_name == "SVM_kernel":
+        y_train = y_train[:, 2:]
+    elif model_name == "ElasticNet_alpha":
+        y_train = y_train[:, 0]
+    elif model_name == "ElasticNet_l1_ratio":
+        y_train = y_train[:, 1]
+    elif model_name == "GMM_n_components":
+        # TODO: 确定GMM标签大小
+        pass
+    elif model_name == "GMM_covariance":
+        # TODO: 确定GMM标签大小
+        pass
+
     early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)  # 用EarlyStopping创建另一个回调函数
     history = model.fit(x=x_train, y=y_train, epochs=epochs, validation_split=0.2, callbacks=[early_stop, PrintDot()])
-    model.save('../system/network/' + model_name + '.h5')
-    return history
+    model.save(save_path + model_name + '.h5')
+    # plot_history(history, model_name)
+
+
+def build_nn_for_model(modelName, input_shape=None, output_dim=None):
+    """
+    对要训练的算法建立一系列神经网分别用来预测各个超参数
+    :param modelName: 算法名称
+    :param input_shape: shape()
+    :param output_dim: 分类的总类别数int
+    :return: {算法名_超参数名：对应的nn}
+    """
+    nn = {}
+    if modelName == "SVM":
+        nn['SVM_C'] = build_SVM_C_nn(input_shape)
+        nn['SVM_gamma'] = build_SVM_gamma_nn(input_shape)
+        nn['SVM_kernel'] = build_SVM_Kernel_nn(input_shape, output_dim)
+    elif modelName == "ElasticNet":
+        nn['ElasticNet_alpha'] = build_ElasticNet_alpha_nn(input_shape)
+        nn['ElasticNet_l1_ratio'] = build_ElasticNet_l1ratio_nn(input_shape)
+    elif modelName == "GMM":
+        nn['GMM_ncomponents'] = build_GMM_ncomponents(input_shape, output_dim)
+        nn['GMM_convariance'] = build_GMM_covariance(input_shape, output_dim)
+    return nn
+
+
+def train_test_nn_for_model(modelName, epoch, train_X, train_y, input_shape=None, output_dim=None, save_path='../system/network/'):
+    """
+    针对算法创建神经网
+    使用多进程并行训练针对一个算法不同超参数的神经网
+    保存训练结果，获取训练历史，并进行test
+    :param modelName: 要训练的算法名字
+    :param epoch: 训练轮数
+    :param train_X: 训练用特征
+    :param train_y: 训练用标签
+    :param input_shape: 神经网输入的shape，类型与numpy中shape相同，默认为None
+    :param output_dim: 输出维度，只有包含分类神经网时有效，值等于总类别数目，默认为None
+    :param save_path: 保存模型的路径，例如：'../system/network/'
+    :return:
+    """
+    print("开始创建神经网")
+    nn_dict = build_nn_for_model(modelName, input_shape, output_dim)
+    jobs = []
+    for name, nn in nn_dict.items():
+        job = mp.Process(target=train_nn, args=(nn, train_X, train_y, epoch, name, save_path))
+        jobs.append(job)
+        job.start()
+    for job in jobs:
+        job.join()
 
 
 def plot_history(history, param_name):
