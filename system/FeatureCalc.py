@@ -80,6 +80,8 @@ def calculate_features(alg_name, dataset):
 		label_entropy = calculate_label_entropy(dataset)
 		features.append(label_entropy)
 		return features
+    elif alg_name == 'GMM':
+        pass
 
 
 def calculate_common_features(dataset):
