@@ -54,7 +54,7 @@
 
 
 **以下目录不在github该项目中上传，但应和AutoParamTuning放于同一目录下**
-- database: 包含适用于三种算法的数据集
+- database_init: 包含适用于三种算法的数据集
     - _OffSpec: 存放表现过差的数据集
         SVM
         GMM
@@ -62,6 +62,14 @@
     - SVM:
         - XXX.csv
         - YYY.csv
+        - ...
+    - ElasticNet
+        - ...
+    - GMM
+        - ...
+- database: 存放预处理过的数据集
+    - SVM:
+        - XXX.csv
         - ...
     - ElasticNet
         - ...
