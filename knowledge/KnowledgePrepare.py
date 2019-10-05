@@ -64,7 +64,7 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             # 搜索精度
             accuracy = 1
             # 生成搜索范围
-            r_gamma = [i / accuracy for i in range(0, 2 * accuracy, 1)]
+            r_gamma = [i / accuracy for i in range(0*accuracy, 2 * accuracy, 1)]
             r_C = [i / accuracy for i in range(1 * accuracy, 2 * accuracy, 1)]
             if param_g is None:
                 # param_grid = {'kernel': ['linear'], 'C': r_C, 'gamma':1}
@@ -77,9 +77,9 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             print("网格搜索完成")
         elif modelName == 'ElasticNet':
             # 搜索精度
-            accuracy = 100
+            accuracy = 1
             # 生成搜索范围
-            r_alpha = [i / accuracy for i in range(0 * accuracy, 100 * accuracy, 1)]
+            r_alpha = [i / accuracy for i in range(0 * accuracy, 2 * accuracy, 1)]
             r_l1 = [i / accuracy for i in range(0 * accuracy, 1 * accuracy, 1)]
             param_grid = {'alpha': r_alpha, 'l1_ratio': r_l1}
             model = ElasticNet()

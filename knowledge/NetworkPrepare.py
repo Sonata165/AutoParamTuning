@@ -9,7 +9,7 @@ from keras import Model
 import keras
 import matplotlib.pyplot as plt
 import pandas as pd
-import os
+from math import *
 from sklearn.preprocessing import StandardScaler
 
 
@@ -231,23 +231,40 @@ def build_nn_for_model(modelName, input_shape=None, output_dim=None):
         nn['GMM_covariance_type'] = build_GMM_covariance_type(input_shape)
     return nn
 
-def spatial_pyramid_pooling(input,output_dim):
+
+def spatial_pyramid_pooling(input, output_dim):
     """
-    空间金字塔池化，将不同shape的input池化为同尺寸的输出，池化窗口大小4x4,2x2,1x1，这里先使用平均池化方法
+    空间金字塔池化，将不同shape的input池化为同尺寸的输出，池化按照四等分，两等分，一等分，这里先使用平均池化方法
     :param input: 输入数据，应为整个数据集的原始数据，格式为二维numpy，shape[0]为不同数据，shape[1]为原始数据特征
     使用pandas中的DataFrame.values即可获得
     :param output_dim: 输出维度，int，表示将整个数据集化为(output_dim, output_dim)大小的特征图
     :return: 池化后的结果
     """
-    # 首先进行4x4的池化
+    div = [4., 2., 1.]
+    for base in div:
+        # 计算窗口大小和步长
+        window_len = ceil(input.shape[0] / base)
+        window_wid = ceil(input.shape[1] / base)
+        stripe_len = floor(input.shape[0] / base)
+        stripe_wid = floor(input.shape[1] / base)
+        # 截取窗口数据
+        # 起始点设置在[0,0]
+        start_wid = 0
+        start_len = 0
+        data = input[start_wid:start_wid + window_wid+1, start_len:start_len + window_len+1]
+        # 池化
+        data = data.mean
+        # 计算下一个窗口位置
+        start_wid += stripe_wid
+        start_len += stripe_len
+
+
+def build_encoder(input, output_dim):
     pass
 
 
-def build_encoder(input,output_dim):
-    pass
-
-
-def train_test_nn_for_model(modelName, epoch, train_X, train_y, input_shape=None, output_dim=None, save_path='../system/network/'):
+def train_test_nn_for_model(modelName, epoch, train_X, train_y, input_shape=None, output_dim=None,
+                            save_path='../system/network/'):
     """
     针对算法创建神经网
     使用多进程并行训练针对一个算法不同超参数的神经网
