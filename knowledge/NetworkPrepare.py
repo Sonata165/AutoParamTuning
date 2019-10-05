@@ -26,11 +26,10 @@ def read_data(modelName, path="knowledge/"):
         x = StandardScaler().fit_transform(raw.values[:, :-6])
     elif modelName == "ElasticNet":
         y = raw.values[:, -2:]
-        x = StandardScaler().fit_transform(raw.values[:, :-6])
+        x = StandardScaler().fit_transform(raw.values[:, :-2])
     elif modelName == "GMM":
-        # TODO: 确定GMM的总label数目
-        y = raw.values[:, -6:]
-        x = StandardScaler().fit_transform(raw.values[:, :-6])
+        y = raw.values[:, -5:]
+        x = StandardScaler().fit_transform(raw.values[:, :-5])
     else:
         return None, None
     # y = np.array(y)
@@ -131,7 +130,7 @@ def build_ElasticNet_l1ratio_nn(input_shape):
     return reg_net(input_shape)
 
 
-def build_GMM_ncomponents(input_shape, output_dim):
+def build_GMM_n_components(input_shape, output_dim):
     """
     生成预测GMM超参数n_components的神经网
     :param input_shape: 输入维度，元组
@@ -141,14 +140,14 @@ def build_GMM_ncomponents(input_shape, output_dim):
     return classify_net(input_shape, output_dim)
 
 
-def build_GMM_covariance(input_shape, output_dim):
+def build_GMM_covariance_type(input_shape):
     """
-    生成预测GMM超参数covariance的神经网
+    生成预测GMM超参数covariance_type的神经网
+    注意，这里神经网的输出结果要转换为整数使用
     :param input_shape: 输入维度，元组
-    :param output_dim: 总类别数，int
     :return: compile好的Keras模型
     """
-    return classify_net(input_shape, output_dim)
+    return reg_net(input_shape)
 
 
 def Dense_withBN_Dropout(input, units, activation=None):
@@ -202,12 +201,9 @@ def train_nn(model, x_train, y_train, epochs, model_name, save_path='../system/n
     elif model_name == "ElasticNet_l1_ratio":
         y_train = y_train[:, 1]
     elif model_name == "GMM_n_components":
-        # TODO: 确定GMM标签大小
-        pass
-    elif model_name == "GMM_covariance":
-        # TODO: 确定GMM标签大小
-        pass
-
+        y_train = y_train[:, :-1]
+    elif model_name == "GMM_covariance_type":
+        y_train = y_train[:, -1]
     early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)  # 用EarlyStopping创建另一个回调函数
     history = model.fit(x=x_train, y=y_train, epochs=epochs, validation_split=0.2, callbacks=[early_stop, PrintDot()])
     model.save(save_path + model_name + '.h5')
@@ -231,8 +227,8 @@ def build_nn_for_model(modelName, input_shape=None, output_dim=None):
         nn['ElasticNet_alpha'] = build_ElasticNet_alpha_nn(input_shape)
         nn['ElasticNet_l1_ratio'] = build_ElasticNet_l1ratio_nn(input_shape)
     elif modelName == "GMM":
-        nn['GMM_ncomponents'] = build_GMM_ncomponents(input_shape, output_dim)
-        nn['GMM_convariance'] = build_GMM_covariance(input_shape, output_dim)
+        nn['GMM_n_components'] = build_GMM_n_components(input_shape, output_dim)
+        nn['GMM_covariance_type'] = build_GMM_covariance_type(input_shape)
     return nn
 
 

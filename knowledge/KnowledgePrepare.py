@@ -87,7 +87,7 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             gs = GridSearchCV(model, param_grid=param_grid, cv=5).fit(x_data, y_data)
             print("网格搜索完成")
         elif modelName == 'GMM':
-            param_grid = {'n_components': [1, 2, 3], 'covariance': ['full', 'tied', 'diag', 'spherical']}
+            param_grid = {'n_components': [1, 2, 3], 'covariance_type': ['full', 'tied', 'diag', 'spherical']}
             model = GaussianMixture()
             print("开始网格搜索")
             gs = GridSearchCV(model, param_grid=param_grid, cv=5).fit(x_data, y_data)
@@ -114,6 +114,7 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             feature = np.concatenate((feature, temp.reshape(temp.shape[0], 1)), axis=1)
 
     # 添加最优参数行
+    param_name = [k for k in gs_list[0].best_params_]
     args = get_param_name(modelName)
     if modelName == "SVM":
         k = args[-1]
@@ -121,29 +122,32 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
         args.append(k + '1')
         args.append(k + '2')
         args.append(k + '3')
+        param_name = args[-6:]
     elif modelName == "GMM":
-        # TODO: process for GMM
-        pass
+        k = args[-2]
+        args[-2] = k + '0'
+        args.insert(-1, k + '1')
+        args.insert(-1, k + '2')
+        args.insert(-1, k + '3')
+        param_name = args[-5:]
     feature = pd.DataFrame(feature, columns=[p for p in dir_list])
     param = []
-    param_name = [k for k in gs_list[0].best_params_]
     for g_dataset in gs_list:
         # example: g_dataset={""C":0,"gamma":0,kernel":"rbf"}
         col = []
         for k in g_dataset.best_params_.values():
-            # one-hot encode: ['linear', 'rbf', 'poly', 'sigmoid']
+            # one-hot encode: ['linear', 'rbf', 'poly', 'sigmoid'],['full', ' tied', 'diag', 'spherical']
             code = [0, 0, 0, 0]
-            # TODO:one-hot for GMM
-            if k == 'linear':
+            if k == 'linear' or k == 'full':
                 code[0] = 1
                 col += code
-            elif k == 'rbf':
+            elif k == 'rbf' or k == 'tied':
                 code[1] = 1
                 col += code
-            elif k == 'poly':
+            elif k == 'poly' or k == 'diag':
                 code[2] = 1
                 col += code
-            elif k == 'sigmoid':
+            elif k == 'sigmoid'or k == 'spherical':
                 code[3] = 1
                 col += code
             else:
@@ -177,11 +181,11 @@ def get_param_name(alg_name):
     """
     if alg_name == "SVM":
         return ["C", "gamma", "kernel"]
-    # TODO:确保顺序正确性
     elif alg_name == "ElasticNet":
+        # TODO:确保顺序正确性
         return ["alpha", "l1_ratio"]
     elif alg_name == "GMM":
-        return ["n_components", "covariance"]
+        return ["n_components", "covariance_type"]
     return None
 
 

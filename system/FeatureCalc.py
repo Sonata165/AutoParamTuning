@@ -74,12 +74,11 @@ def calculate_features(alg_name, dataset):
 		label_num = calculate_label_num(dataset)
 		features.append(label_entropy)
 		features.append(label_num)
-		return features
 	elif alg_name == 'ElasticNet':
 		# 计算标签信息熵
 		label_entropy = calculate_label_entropy(dataset)
 		features.append(label_entropy)
-		return features
+	return features
 
 
 def calculate_common_features(dataset):
