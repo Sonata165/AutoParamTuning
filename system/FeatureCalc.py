@@ -83,6 +83,8 @@ def calculate_features(alg_name, dataset):
     elif alg_name == 'GMM':
         pass
 
+    return features
+
 
 def calculate_common_features(dataset):
     '''
