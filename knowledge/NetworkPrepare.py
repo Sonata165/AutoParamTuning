@@ -231,6 +231,21 @@ def build_nn_for_model(modelName, input_shape=None, output_dim=None):
         nn['GMM_covariance_type'] = build_GMM_covariance_type(input_shape)
     return nn
 
+def spatial_pyramid_pooling(input,output_dim):
+    """
+    空间金字塔池化，将不同shape的input池化为同尺寸的输出，池化窗口大小4x4,2x2,1x1，这里先使用平均池化方法
+    :param input: 输入数据，应为整个数据集的原始数据，格式为二维numpy，shape[0]为不同数据，shape[1]为原始数据特征
+    使用pandas中的DataFrame.values即可获得
+    :param output_dim: 输出维度，int，表示将整个数据集化为(output_dim, output_dim)大小的特征图
+    :return: 池化后的结果
+    """
+    # 首先进行4x4的池化
+    pass
+
+
+def build_encoder(input,output_dim):
+    pass
+
 
 def train_test_nn_for_model(modelName, epoch, train_X, train_y, input_shape=None, output_dim=None, save_path='../system/network/'):
     """
