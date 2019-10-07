@@ -134,9 +134,4 @@ def isnub(s):
         return False
 
 
-if __name__ == '__main__':
-    work()
-
-
-
 
