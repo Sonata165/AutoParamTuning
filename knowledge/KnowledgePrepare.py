@@ -10,8 +10,9 @@ database目录结构如README中所示
 	第一行是特征名和参数名，从第二行开始是数据
 	第一列不是编号，从第一列开始就是数据
 """
-
-from system.FeatureCalc import *
+import sys
+sys.path.append('system')
+from FeatureCalc import *
 import os
 import pandas as pd
 from sklearn.model_selection import GridSearchCV
