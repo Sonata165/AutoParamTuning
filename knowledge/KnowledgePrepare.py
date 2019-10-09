@@ -68,7 +68,6 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             r_gamma = [i / accuracy for i in range(0*accuracy, 2 * accuracy, 1)]
             r_C = [i / accuracy for i in range(1 * accuracy, 2 * accuracy, 1)]
             if param_g is None:
-                # param_grid = {'kernel': ['linear'], 'C': r_C, 'gamma':1}
                 param_grid = {'kernel': ['linear'], 'C': r_C, 'gamma': r_gamma}
             else:
                 param_grid = param_g
