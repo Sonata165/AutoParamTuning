@@ -189,6 +189,9 @@ def get_param_name(alg_name):
         return ["n_components", "covariance_type"]
     return None
 
+def get_continuous_para_name(alg_name):
+    if alg_name == "SVM":
+        return ["C", "gamma"]
 
 if __name__ == '__main__':
     main()
