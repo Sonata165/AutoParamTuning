@@ -4,18 +4,20 @@ Created on Mon Oct  7 15:22:46 2019
 
 @author: 陈泊舟
 """
+import pandas as pd
 
 from sklearn.svm import SVC
 from sklearn.linear_model import ElasticNet
 from sklearn.mixture import GaussianMixture as GMM
 from sklearn.metrics import adjusted_rand_score
 from sklearn.model_selection import cross_val_score
-import os
-params_path = os.path.realpath(__file__).replace('\system\FutherOpt.py','') + os.sep + 'knowledge'
-# + os.sep + 'KnowledgePrepare.py'
+
+# import os
+# params_path = os.path.realpath(__file__).replace('\system\FutherOpt.py','') + os.sep + 'knowledge'
 import sys
-sys.path.append(params_path)
-import knowledge.KnowledgePrepare
+sys.path.append('knowledge')
+
+import KnowledgePrepare
 '''
 均在fin_local_supreme函数刚开始时初始化
 '''
@@ -28,6 +30,20 @@ global tree#存储误差绝对值和segment_tree
 定义误差常量
 '''
 EPSILON = 0.001
+
+def main():
+    dataset = pd.read_csv('system/input/zoo1.csv')
+    print(dataset.head())
+    
+    y = dataset.pop('Label')
+    X = dataset
+
+    model = SVC(gamma='auto')
+    scores = cross_val_score(model, X, y, cv=10)
+    print(scores.mean())
+
+    a = find_local_supreme(dataset, 'SVM', [1, 1, 'auto'])
+    print(a)
 
 def find_local_supreme(dataset, alg_name, predicted_param):
     '''
@@ -255,3 +271,6 @@ def gmm_score(dataset,params):
 
     ret = adjusted_rand_score(y_true, y_pred)
     return ret
+
+if __name__ == '__main__':
+    main()
