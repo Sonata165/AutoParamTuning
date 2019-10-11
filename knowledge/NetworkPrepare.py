@@ -9,6 +9,7 @@ from keras import Model
 import keras
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 from math import *
 from sklearn.preprocessing import StandardScaler
 
@@ -23,13 +24,16 @@ def read_data(modelName, path="knowledge/"):
     raw = pd.read_csv(path + modelName + ".csv")
     if modelName == "SVM":
         y = raw.values[:, -6:]
-        x = StandardScaler().fit_transform(raw.values[:, :-6])
+        x = StandardScaler().fit_transform(raw.values[:, :-6].T)
+        x = x.T
     elif modelName == "ElasticNet":
         y = raw.values[:, -2:]
-        x = StandardScaler().fit_transform(raw.values[:, :-2])
+        x = StandardScaler().fit_transform(raw.values[:, :-2].T)
+        x = x.T
     elif modelName == "GMM":
         y = raw.values[:, -5:]
-        x = StandardScaler().fit_transform(raw.values[:, :-5])
+        x = StandardScaler().fit_transform(raw.values[:, :-5].T)
+        x = x.T
     else:
         return None, None
     # y = np.array(y)

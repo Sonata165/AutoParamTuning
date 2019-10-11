@@ -182,7 +182,6 @@ def get_param_name(alg_name):
     if alg_name == "SVM":
         return ["C", "gamma", "kernel"]
     elif alg_name == "ElasticNet":
-        # TODO:确保顺序正确性
         return ["alpha", "l1_ratio"]
     elif alg_name == "GMM":
         return ["n_components", "covariance_type"]
