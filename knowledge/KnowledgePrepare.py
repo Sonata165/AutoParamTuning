@@ -10,9 +10,7 @@ database目录结构如README中所示
 	第一行是特征名和参数名，从第二行开始是数据
 	第一列不是编号，从第一列开始就是数据
 """
-import sys
-sys.path.append('system')
-from FeatureCalc import *
+from system.FeatureCalc import *
 import os
 import pandas as pd
 from sklearn.model_selection import GridSearchCV
@@ -20,13 +18,15 @@ from sklearn.svm import SVC
 from sklearn.linear_model import ElasticNet
 from sklearn.mixture import GaussianMixture
 import numpy as np
+from math import *
 
 
 def main():
-    get_feature('SVM', database_dir='../database/', param_g={'kernel': ['linear', 'rbf', 'poly', 'sigmoid'], 'C': [1, 10, 50, 10]})
+    get_feature('SVM', database_dir='../database/',
+                param_g={'kernel': ['linear', 'rbf', 'poly', 'sigmoid'], 'C': [1, 10, 50, 10]})
 
 
-def get_feature(modelName, database_dir='../database/', param_g=None):
+def get_feature(modelName, database_dir='../database/', output_dir=None, param_g=None):
     """
     获取特征-标签数据
     返回最优参数的同时保存数据，格式为：
@@ -34,14 +34,17 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
     name:
     data:
     :param modelName: 要优化的模型，字符串，区分大小写，例：'SVM','ElasticNet','GaussianMixture
+    :param database_dir: 数据库目录
+    :param output_dir: 输出目录
     :param param_g: 网格搜索范围， 默认值为None，并使用内置的搜索范围，格式如下：
                     例:SVM
                     {'kernel': ['linear', 'rbf', 'poly', 'sigmoid'],
                      'C': [1, 10, 50, 10],
                      'gamma': r_gamma}
-    :return: 所有特征的列表
+    :return: 所有特征和标签的nparray
     """
-
+    if output_dir is None:
+        output_dir = "knowledge/" + modelName + ".csv"
     dataset_dir = database_dir + modelName + "/"
     dir_list = os.listdir(dataset_dir)
     feature = None
@@ -57,20 +60,14 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
         x_data = data[:, 0:-1]
         y_data = (data[:, -1])
 
-        # print(x_data)
-
         # 网格搜索标签
         if modelName == "SVM":
-            # 搜索精度
-            accuracy = 1
             # 生成搜索范围
-            r_gamma = [i / accuracy for i in range(0*accuracy, 2 * accuracy, 1)]
-            r_C = [i / accuracy for i in range(1 * accuracy, 2 * accuracy, 1)]
             if param_g is None:
                 param_grid = {
-                    'kernel': ['rbf'], 
-                    'C': [1, 10, 50, 100], 
-                    'gamma': [1, 10, 50, 100]}
+                    'kernel': ['rbf', 'sigmoid'],
+                    'C': [pow(2, i) for i in range(-10, 7)],
+                    'gamma': [pow(2, i) for i in range(-10, 7)]}
             else:
                 param_grid = param_g
             model = SVC()
@@ -78,11 +75,13 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             gs = GridSearchCV(model, param_grid=param_grid, refit=True, cv=5).fit(x_data, y_data)
             print("网格搜索完成")
         elif modelName == 'ElasticNet':
-            # 搜索精度
-            accuracy = 1
             # 生成搜索范围
-            r_alpha = [i / accuracy for i in range(0 * accuracy, 2 * accuracy, 1)]
-            r_l1 = [i / accuracy for i in range(0 * accuracy, 1 * accuracy, 1)]
+            r_alpha = [pow(2, i) for i in range(-10, 7)]
+            r_l1 = []
+            for i in range(-10, 0):
+                j = pow(2, i)
+                if 0.01 <= j <= 1:
+                    r_l1.append(j)
             param_grid = {'alpha': r_alpha, 'l1_ratio': r_l1}
             model = ElasticNet()
             print("开始网格搜索")
@@ -105,7 +104,7 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
 
     for p in dir_list:
         path = os.path.join(dataset_dir, p)
-        print("path: " + path)
+        # print("path: " + path)
         # 读取数据
         data = pd.read_csv(path)
         # 计算数据集特征并合并存储
@@ -149,7 +148,7 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
             elif k == 'poly' or k == 'diag':
                 code[2] = 1
                 col += code
-            elif k == 'sigmoid'or k == 'spherical':
+            elif k == 'sigmoid' or k == 'spherical':
                 code[3] = 1
                 col += code
             else:
@@ -168,8 +167,8 @@ def get_feature(modelName, database_dir='../database/', param_g=None):
     # 保存特征和超参数
     res.columns = ["FeatureName"] + [p for p in dir_list]
     res = pd.DataFrame(res.values.T, index=res.columns, columns=res.index)
-    res.to_csv("knowledge/" + modelName + ".csv", index=False, header=None)
-    return np.array(feature).tolist()
+    res.to_csv(output_dir, index=False, header=None)
+    return res.values
 
 
 def get_param_name(alg_name):
@@ -182,17 +181,18 @@ def get_param_name(alg_name):
       要求列表大小和神经网络输出数目总数保持一致，顺序也和神经网络输出保持一致
     """
     if alg_name == "SVM":
-        return ["C", "gamma"]
+        return ["C", "gamma", "kernel"]
     elif alg_name == "ElasticNet":
-        # TODO:确保顺序正确性
         return ["alpha", "l1_ratio"]
     elif alg_name == "GMM":
         return ["n_components", "covariance_type"]
     return None
 
+
 def get_continuous_para_name(alg_name):
     if alg_name == "SVM":
         return ["C", "gamma"]
+
 
 if __name__ == '__main__':
     main()

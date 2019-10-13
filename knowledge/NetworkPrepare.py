@@ -7,38 +7,42 @@ import multiprocessing as mp
 from keras.layers import *
 from keras import Model
 import keras
+import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from math import *
 from sklearn.preprocessing import StandardScaler
+import json
 
 
 def read_data(modelName, path="knowledge/"):
     """
-    从/knowledge/modelName.csv读取数据
+    从/knowledge/modelName.csv读取数据，并将标准化所使用的对象序列化保存到"knowledge/"目录下
     :param modelName: 模型名称，读取文件的名称
     :param path: 要读取的文件所在的路径
-    :return: train_X, train_y, label顺序按照KnowledgePrepare中get_param_name的顺序，x,y做标准化处理
+    :return: train_X, train_y, label顺序按照KnowledgePrepare中get_param_name的顺序，x做标准化处理
     """
     raw = pd.read_csv(path + modelName + ".csv")
     if modelName == "SVM":
-        y = StandardScaler().fit_transform(raw.values[:, -6:-4])
-        y = np.hstack((y,raw.values[:, -4:]))
-        x = StandardScaler().fit_transform(raw.values[:, :-6])
+        std_x = StandardScaler()
+        x = std_x.fit_transform(raw.values[:, :-6])
+        y = raw.values[:, -6:]
+        with open("knowledge/" + 'SVM_std_x.json', 'w') as f:
+            json.dump({'mean': std_x.mean_.tolist(), 'var': std_x.var_.tolist()}, f)
     elif modelName == "ElasticNet":
-        y = StandardScaler().fit_transform(raw.values[:, -2:])
-        x = StandardScaler().fit_transform(raw.values[:, :-2])
+        std_x = StandardScaler()
+        x = std_x.fit_transform(raw.values[:, :-2])
+        y = raw.values[:, -2:]
+        with open("knowledge/" + 'Elastic_std_x.json', 'w') as f:
+            json.dump({'mean': std_x.mean_.tolist(), 'var': std_x.var_.tolist()}, f)
     elif modelName == "GMM":
+        std_x = StandardScaler()
         y = raw.values[:, -5:]
-        x = StandardScaler().fit_transform(raw.values[:, :-5])
+        x = std_x.fit_transform(raw.values[:, :-5])
+        with open("knowledge/" + 'GMM_std_x.json', 'w') as f:
+            json.dump({'mean': std_x.mean_.tolist(), 'var': std_x.var_.tolist()}, f)
     else:
         return None, None
-    # y = np.array(y)
-
-    """
-    train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2)
-    return train_x, test_x, train_y, test_y
-    """
     return x, y
 
 
@@ -53,7 +57,7 @@ def reg_net(input_shape, activation=None):
     x = Dense_withBN_Dropout(x_input, 16, activation)
     x = Dense_withBN_Dropout(x, 16, activation)
     x = Dense_withBN_Dropout(x, 4, activation)
-    x = Dense_withBN_Dropout(x, 1, activation)
+    x = Dense_withBN_Dropout(x, 1, activation=Activation('sigmoid'))
     model = Model(inputs=[x_input], outputs=[x])
     model.compile(
         loss=keras.losses.mean_squared_error,
@@ -101,7 +105,7 @@ def build_SVM_C_nn(input_shape):
     :param input_shape: 输入维度，元组，如有6个feature，则input_shape=(6,)
     :return: compile好的Keras模型
     """
-    return reg_net(input_shape)
+    return reg_net(input_shape, activation=ReLU())
 
 
 def build_SVM_gamma_nn(input_shape):
@@ -110,7 +114,7 @@ def build_SVM_gamma_nn(input_shape):
     :param input_shape: 输入维度，元组，如有6个feature，则input_shape=(6,)
     :return: compile好的Keras模型
     """
-    return reg_net(input_shape)
+    return reg_net(input_shape, activation=ReLU())
 
 
 def build_ElasticNet_alpha_nn(input_shape):
@@ -131,9 +135,9 @@ def build_ElasticNet_l1ratio_nn(input_shape):
     return reg_net(input_shape)
 
 
-def build_GMM_n_components(input_shape, output_dim):
+def build_GMM_covariance_type(input_shape, output_dim):
     """
-    生成预测GMM超参数n_components的神经网
+    生成预测GMM超参数covariance_type的神经网
     :param input_shape: 输入维度，元组
     :param output_dim: 总类别数，int
     :return: compile好的Keras模型
@@ -141,9 +145,9 @@ def build_GMM_n_components(input_shape, output_dim):
     return classify_net(input_shape, output_dim)
 
 
-def build_GMM_covariance_type(input_shape):
+def build_GMM_n_components(input_shape):
     """
-    生成预测GMM超参数covariance_type的神经网
+    生成预测GMM超参数n_components的神经网
     注意，这里神经网的输出结果要转换为整数使用
     :param input_shape: 输入维度，元组
     :return: compile好的Keras模型
@@ -252,7 +256,7 @@ def spatial_pyramid_pooling(input, output_dim):
         # 起始点设置在[0,0]
         start_wid = 0
         start_len = 0
-        data = input[start_wid:start_wid + window_wid+1, start_len:start_len + window_len+1]
+        data = input[start_wid:start_wid + window_wid + 1, start_len:start_len + window_len + 1]
         # 池化
         data = data.mean
         # 计算下一个窗口位置

@@ -1,3 +1,7 @@
-iris1.csv,iris2.csv,sp_0_dota2Train.csv,sp_0_MFCCs.csv,sp_0_mushroom.csv,sp_0_S01R01.csv,zoo1.csv
-16.70733452,16.68033981,125.6029053,132.7419891,137.2614746,-23025.22461,17.48417664
-1.403942585,1.501766801,10.45769405,10.13974857,12.71040916,55944.55078,-0.129829198
+,SVM_C,SVM_gamma,SVM_kernel
+sp_0_avila-tr.csv,0.0,0.9999778270721436,rbf
+sp_0_avila-tr.csv,0.0,0.9999778270721436,rbf
+sp_0_avila-ts.csv,0.0,0.99998939037323,rbf
+sp_0_avila-ts.csv,0.0,0.99998939037323,rbf
+sp_0_connect-4.csv,0.0,1.0,rbf
+sp_0_connect-4.csv,0.0,1.0,rbf
