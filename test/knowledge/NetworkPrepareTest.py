@@ -1,19 +1,20 @@
 import os
-import sys
-
-sys.path.append('knowledge')
-sys.path.append('system')
-
-from KnowledgePrepare import get_feature
-from NetworkPrepare import read_data, train_test_nn_for_model
-
+from knowledge.NetworkPrepare import read_data, train_test_nn_for_model
+from knowledge.KnowledgePrepare import get_feature
 from multiprocessing import freeze_support
 if __name__ == '__main__':
     freeze_support()
     modelName = "SVM"
-    # print("设置目录")
-    # os.chdir("../../")
+    print("设置目录")
+    os.chdir("../../")
     print("生成参数")
+    accuracy = 1
+    r_gamma = [i / accuracy for i in range(0 * accuracy, 2 * accuracy, 1)]
+    r_C = [i / accuracy for i in range(1 * accuracy, 2 * accuracy, 1)]
+    param_grid = {
+        'kernel': ['rbf'],
+        'C': r_C,
+        'gamma': r_gamma}
     get_feature(modelName)
     print("准备数据")
     x, y = read_data(modelName)

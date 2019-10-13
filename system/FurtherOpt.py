@@ -17,8 +17,7 @@ params_path = os.path.realpath(__file__).replace('\system\FutherOpt.py','') + os
 import sys
 sys.path.append(params_path)
 sys.path.append('knowledge')
-
-import KnowledgePrepare
+import knowledge.KnowledgePrepare
 '''
 均在fin_local_supreme函数刚开始时初始化
 '''
