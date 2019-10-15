@@ -4,43 +4,86 @@
 '''
 
 import multiprocessing as mp
-import numpy as np
 from keras.layers import *
 from keras import Model
 import keras
+import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from math import *
 from sklearn.preprocessing import StandardScaler
+import json
 
 
 def read_data(modelName, path="knowledge/"):
     """
-    从/knowledge/modelName.csv读取数据
+    从/knowledge/modelName.csv读取数据，并将标准化所使用的对象序列化保存到"knowledge/"目录下
     :param modelName: 模型名称，读取文件的名称
     :param path: 要读取的文件所在的路径
-    :return: train_X, train_y, label顺序按照KnowledgePrepare中get_param_name的顺序，x,y做标准化处理
+    :return: train_X, train_y, label顺序按照KnowledgePrepare中get_param_name的顺序，x做标准化处理
     """
     raw = pd.read_csv(path + modelName + ".csv")
     if modelName == "SVM":
-        y = StandardScaler().fit_transform(raw.values[:, -6:-4])
-        y = np.hstack((y,raw.values[:, -4:]))
-        x = StandardScaler().fit_transform(raw.values[:, :-6])
+        std_x = StandardScaler()
+        x = std_x.fit_transform(raw.values[:, :-6])
+        # y = raw.values[:, -6:]
+        std_y = StandardScaler()
+        y = std_y.fit_transform(raw.values[:, -6:-4])
+        y = np.hstack((y, raw.values[:, -4:]))
+        with open("knowledge/" + 'SVM_std_y.json', 'w') as f:
+            json.dump({'mean': std_y.mean_.tolist(), 'var': std_y.var_.tolist()}, f)
+
+        with open("knowledge/" + 'SVM_std_x.json', 'w') as f:
+            json.dump({'mean': std_x.mean_.tolist(), 'var': std_x.var_.tolist()}, f)
     elif modelName == "ElasticNet":
-        y = StandardScaler().fit_transform(raw.values[:, -2:])
-        x = StandardScaler().fit_transform(raw.values[:, :-2])
+        std_x = StandardScaler()
+        x = std_x.fit_transform(raw.values[:, :-2])
+        # y = raw.values[:, -2:]
+        std_y = StandardScaler()
+        y = std_y.fit_transform(raw.values[:, -2:])
+        with open("knowledge/" + 'Elastic_std_y.json', 'w') as f:
+            json.dump({'mean': std_y.mean_.tolist(), 'var': std_y.var_.tolist()}, f)
+
+        with open("knowledge/" + 'Elastic_std_x.json', 'w') as f:
+            json.dump({'mean': std_x.mean_.tolist(), 'var': std_x.var_.tolist()}, f)
     elif modelName == "GMM":
+        std_x = StandardScaler()
+        x = std_x.fit_transform(raw.values[:, :-5])
         y = raw.values[:, -5:]
-        x = StandardScaler().fit_transform(raw.values[:, :-5])
+
+        with open("knowledge/" + 'GMM_std_x.json', 'w') as f:
+            json.dump({'mean': std_x.mean_.tolist(), 'var': std_x.var_.tolist()}, f)
     else:
         return None, None
-    # y = np.array(y)
-
-    """
-    train_x, test_x, train_y, test_y = train_test_split(x, y, test_size=0.2)
-    return train_x, test_x, train_y, test_y
-    """
     return x, y
+
+
+def read_data_without_std(modelName, path="knowledge/"):
+    """
+    从/knowledge/modelName.csv读取数据，并将标准化所使用的对象序列化保存到"knowledge/"目录下
+    :param modelName: 模型名称，读取文件的名称
+    :param path: 要读取的文件所在的路径
+    :return: train_X, train_y, label顺序按照KnowledgePrepare中get_param_name的顺序，x做标准化处理
+    """
+    raw = pd.read_csv(path + modelName + ".csv")
+    if modelName == "SVM":
+
+        x = raw.values[:, :-6]
+        # y = raw.values[:, -6:]
+        y = raw.values[:, -6:]
+    elif modelName == "ElasticNet":
+        x = raw.values[:, :-2]
+        y = raw.values[:, -2:]
+    elif modelName == "GMM":
+        x = raw.values[:, :-5]
+        y = raw.values[:, -5:]
+    else:
+        return None, None
+    return x, y
+
+def expand_dim_backend(x):
+    import keras
+    return keras.backend.expand_dims(x, -1)
 
 
 def reg_net(input_shape, activation=None):
@@ -50,15 +93,48 @@ def reg_net(input_shape, activation=None):
     :param activation: 激活函数，默认为None，如要指定激活函数，传入length为4的元组，元素为keras.layer中的激活函数层，如keras.layers.ReLU()
     :return: compile好的Keras模型
     """
+    """
     x_input = Input(input_shape)
-    x = Dense_withBN_Dropout(x_input, 16, activation)
-    x = Dense_withBN_Dropout(x, 16, activation)
+    x = Lambda(expand_dim_backend)(x_input)
+    x = LSTM(units=32, activation='tanh', return_sequences=True)(x)
+    x = Flatten()(x)
+    # x = Dense_withBN_Dropout(x_input, 32, activation)
+    x = Dense_withBN_Dropout(x, 32, activation)
     x = Dense_withBN_Dropout(x, 4, activation)
-    x = Dense_withBN_Dropout(x, 1, activation)
+    x = Dense_withBN_Dropout(x, 1, activation=Activation('sigmoid'))
     model = Model(inputs=[x_input], outputs=[x])
     model.compile(
         loss=keras.losses.mean_squared_error,
-        optimizer=keras.optimizers.Adam(0.001),  # 学习率初始值为0.001
+        optimizer=keras.optimizers.Adam(0.05),  # 学习率初始值为0.001
+        metrics=['mae', 'mse']  # 评估指标: [平均绝对误差, 均方误差]
+    )
+    return model
+    """
+    model = keras.Sequential([
+        Lambda(expand_dim_backend),
+        LSTM(units=32, input_shape=input_shape, activation='tanh', return_sequences=True),
+        LSTM(units=16, activation='tanh', return_sequences=True),
+        Conv1D(filters=1,kernel_size=4,padding='same',activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        BatchNormalization(),
+        Activation('tanh'),
+        Flatten(),
+        Dense(36, activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        BatchNormalization(),
+        Activation('tanh'),
+        Dropout(0.2),
+        Dense(16, activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        BatchNormalization(),
+        Activation('tanh'),
+        Dropout(0.2),
+        Dense(4, activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        BatchNormalization(),
+        Activation('tanh'),
+        Dropout(0.2),
+        Dense(1)
+    ])
+    model.compile(
+        loss='mae',
+        optimizer=keras.optimizers.Adam(0.01),  # 学习率初始值为0.001
         metrics=['mae', 'mse']  # 评估指标: [平均绝对误差, 均方误差]
     )
     return model
@@ -71,19 +147,54 @@ def classify_net(input_shape, output_dim):
     :param output_dim: 总类别数
     :return: compile好的模型
     """
+    """
     x_input = Input(input_shape)
-    x = Dense_withBN_Dropout(x_input, 16)
-    x = Dense_withBN_Dropout(x, 16)
+
+    x = Lambda(expand_dim_backend)(x_input)
+    x = LSTM(units=32, activation='tanh', return_sequences=True)(x)
+    x = LSTM(units=16, activation='tanh', return_sequences=True)(x)
+    x = Flatten()(x)
+    # x = Dense_withBN_Dropout(x_input, 32)
+    x = Dense_withBN_Dropout(x, 32)
     x = Dense_withBN_Dropout(x, 4)
     x = Dense_withBN_Dropout(x, output_dim, activation=Softmax())
     model = Model(inputs=[x_input], outputs=[x])
     model.compile(
         loss=keras.losses.categorical_crossentropy,
-        optimizer=keras.optimizers.Adam(0.001),  # 学习率初始值为0.001
-        metrics=['mae', 'mse']  # 评估指标: [平均绝对误差, 均方误差]
+        optimizer=keras.optimizers.Adam(0.01),  # 学习率初始值为0.001
+        metrics=['mae', 'mse', 'acc']  # 评估指标: [平均绝对误差, 均方误差, 准确率]
     )
     return model
-
+    """
+    model = keras.Sequential([
+        Lambda(expand_dim_backend),
+        LSTM(units=32, input_shape=input_shape, activation='tanh', return_sequences=True, activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        LSTM(units=16, activation='tanh', return_sequences=True,activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        Conv1D(filters=1, kernel_size=4, padding='same', activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        BatchNormalization(),
+        Activation('tanh'),
+        Flatten(),
+        Dense(36, activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        BatchNormalization(),
+        Activation('tanh'),
+        Dropout(0.2),
+        Dense(16, activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        BatchNormalization(),
+        Activation('tanh'),
+        Dropout(0.2),
+        Dense(4, activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
+        BatchNormalization(),
+        Activation('tanh'),
+        Dropout(0.2),
+        Dense(output_dim),
+        Softmax(),
+    ])
+    model.compile(
+        loss=keras.losses.categorical_crossentropy,
+        optimizer=keras.optimizers.Adam(0.01),  # 学习率初始值为0.001
+        metrics=['mae', 'mse', 'acc']  # 评估指标: [平均绝对误差, 均方误差, 准确率]
+    )
+    return model
 
 def build_SVM_Kernel_nn(input_shape, output_dim):
     """
@@ -132,9 +243,9 @@ def build_ElasticNet_l1ratio_nn(input_shape):
     return reg_net(input_shape)
 
 
-def build_GMM_n_components(input_shape, output_dim):
+def build_GMM_covariance_type(input_shape, output_dim):
     """
-    生成预测GMM超参数n_components的神经网
+    生成预测GMM超参数covariance_type的神经网
     :param input_shape: 输入维度，元组
     :param output_dim: 总类别数，int
     :return: compile好的Keras模型
@@ -142,9 +253,9 @@ def build_GMM_n_components(input_shape, output_dim):
     return classify_net(input_shape, output_dim)
 
 
-def build_GMM_covariance_type(input_shape):
+def build_GMM_n_components(input_shape):
     """
-    生成预测GMM超参数covariance_type的神经网
+    生成预测GMM超参数n_components的神经网
     注意，这里神经网的输出结果要转换为整数使用
     :param input_shape: 输入维度，元组
     :return: compile好的Keras模型
@@ -164,6 +275,7 @@ def Dense_withBN_Dropout(input, units, activation=None):
     x = BatchNormalization()(x)
     if activation is None:
         x = LeakyReLU(alpha=0.3)(x)
+        # x = ReLU()(x)
     else:
         x = activation(x)
     # x = Dropout(rate=0.1)(x)
@@ -192,24 +304,35 @@ def train_nn(model, x_train, y_train, epochs, model_name, save_path='../system/n
     :param save_path: 保存模型的路径，例如：'../system/network/'
     :return: None
     """
+    monitor = None
     if model_name == "SVM_C":
         y_train = y_train[:, 0]
+        monitor = 'val_loss'
     elif model_name == "SVM_gamma":
         y_train = y_train[:, 1]
+        monitor = 'val_loss'
     elif model_name == "SVM_kernel":
         y_train = y_train[:, 2:]
+        monitor = 'val_acc'
     elif model_name == "ElasticNet_alpha":
         y_train = y_train[:, 0]
+        monitor = 'val_loss'
     elif model_name == "ElasticNet_l1_ratio":
         y_train = y_train[:, 1]
+        monitor = 'val_loss'
     elif model_name == "GMM_n_components":
-        y_train = y_train[:, :-1]
+        y_train = y_train[:, -5]
+        monitor = 'val_loss'
     elif model_name == "GMM_covariance_type":
-        y_train = y_train[:, -1]
-    early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)  # 用EarlyStopping创建另一个回调函数
-    history = model.fit(x=x_train, y=y_train, epochs=epochs, validation_split=0.2, callbacks=[early_stop, PrintDot()])
+        y_train = y_train[:, -4:]
+        monitor = 'val_acc'
+    early_stop = keras.callbacks.EarlyStopping(monitor=monitor, patience=300, restore_best_weights=True,
+                                               verbose=2)  # 用EarlyStopping创建另一个回调函数
+    reduceLR = keras.callbacks.ReduceLROnPlateau(monitor=monitor, factor=0.5, patience=50)
+    history = model.fit(x=x_train, y=y_train, epochs=epochs, validation_split=0.2,
+                        callbacks=[early_stop, reduceLR])
     model.save(save_path + model_name + '.h5')
-    # plot_history(history, model_name)
+    plot_history(history, model_name, save_path + model_name)
 
 
 def build_nn_for_model(modelName, input_shape=None, output_dim=None):
@@ -229,8 +352,8 @@ def build_nn_for_model(modelName, input_shape=None, output_dim=None):
         nn['ElasticNet_alpha'] = build_ElasticNet_alpha_nn(input_shape)
         nn['ElasticNet_l1_ratio'] = build_ElasticNet_l1ratio_nn(input_shape)
     elif modelName == "GMM":
-        nn['GMM_n_components'] = build_GMM_n_components(input_shape, output_dim)
-        nn['GMM_covariance_type'] = build_GMM_covariance_type(input_shape)
+        nn['GMM_n_components'] = build_GMM_n_components(input_shape)
+        nn['GMM_covariance_type'] = build_GMM_covariance_type(input_shape, output_dim)
     return nn
 
 
@@ -253,7 +376,7 @@ def spatial_pyramid_pooling(input, output_dim):
         # 起始点设置在[0,0]
         start_wid = 0
         start_len = 0
-        data = input[start_wid:start_wid + window_wid+1, start_len:start_len + window_len+1]
+        data = input[start_wid:start_wid + window_wid + 1, start_len:start_len + window_len + 1]
         # 池化
         data = data.mean
         # 计算下一个窗口位置
@@ -291,7 +414,7 @@ def train_test_nn_for_model(modelName, epoch, train_X, train_y, input_shape=None
         job.join()
 
 
-def plot_history(history, param_name):
+def plot_history(history, param_name, path):
     hist = pd.DataFrame(history.history)  # 将history从dict类型转换为DataFrame类型
     print(hist)
     hist['epoch'] = history.epoch  # 添加epoch列
@@ -299,19 +422,52 @@ def plot_history(history, param_name):
     plt.figure()
     plt.xlabel('Epoch')
     plt.ylabel('Mean Abs Error [' + param_name + ']')
-    plt.plot(hist['epoch'], hist['mean_absolute_error'],  # 画平均绝对误差图
+    plt.plot(hist['epoch'], hist['mae'],  # 画平均绝对误差图
              label='Train Error')
-    plt.plot(hist['epoch'], hist['val_mean_absolute_error'],  # 画验证集平均绝对误差图
+    plt.plot(hist['epoch'], hist['val_mae'],  # 画验证集平均绝对误差图
              label='Val Error')
     plt.legend()  # 添加图例
+    plt.savefig(path+'_mae.png')
+    plt.show()
+    plt.close()
     # plt.ylim([0,100])												# 设置y轴范围
 
     plt.figure()
     plt.xlabel('Epoch')
-    plt.ylabel('Mean Square Error [$' + param_name + '^2$]')
-    plt.plot(hist['epoch'], hist['mean_squared_error'],  # 画均方误差图
+    plt.ylabel('Mean Square Error ['+param_name+']')
+    plt.plot(hist['epoch'], hist['mse'],  # 画均方误差图
              label='Train Error')
-    plt.plot(hist['epoch'], hist['val_mean_squared_error'],  # 画验证集均方误差图
+    plt.plot(hist['epoch'], hist['val_mse'],  # 画验证集均方误差图
              label='Val Error')
     plt.legend()  # 添加图例
-# plt.ylim([0,32000])											# 设置y轴范围
+    plt.savefig(path+'_mse.png')
+    plt.show()
+    plt.close()
+
+    plt.figure()
+    plt.xlabel('Epoch')
+    plt.ylabel('loss [' + param_name + ']')
+    plt.plot(hist['epoch'], hist['loss'],  # 画loss
+             label='Train Error')
+    plt.plot(hist['epoch'], hist['val_loss'],  # 画验证集loss
+             label='Val Error')
+    plt.legend()  # 添加图例
+    plt.savefig(path+'_loss.png')
+    plt.show()
+    plt.close()
+
+    # plt.ylim([0,32000])											# 设置y轴范围
+    if param_name == "SVM_kernel" or param_name == "GMM_covariance_type":
+        plt.figure()
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy [' + param_name + ']')
+        plt.plot(hist['epoch'], hist['acc'],  # 画均方误差图
+                 label='Train Error')
+        plt.plot(hist['epoch'], hist['val_acc'],  # 画验证集均方误差图
+                 label='Val Error')
+        plt.legend()  # 添加图例
+        plt.savefig(path+'_acc.png')
+        plt.show()
+        plt.close()
+
+

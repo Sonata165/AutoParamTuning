@@ -21,7 +21,7 @@ def main():
 
     if choice == 1:
         modelName = "SVM"
-        print("生成参数")
+        print("计算特征和标签")
         accuracy = 1
         r_gamma = [i / accuracy for i in range(0 * accuracy, 2 * accuracy, 1)]
         r_C = [i / accuracy for i in range(1 * accuracy, 2 * accuracy, 1)]

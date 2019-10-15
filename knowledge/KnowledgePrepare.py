@@ -88,10 +88,10 @@ def get_feature(modelName, database_dir='../database/', output_dir=None, param_g
             gs = GridSearchCV(model, param_grid=param_grid, cv=5).fit(x_data, y_data)
             print("网格搜索完成")
         elif modelName == 'GMM':
-            param_grid = {'n_components': [1, 2, 3], 'covariance_type': ['full', 'tied', 'diag', 'spherical']}
+            param_grid = {'n_components': [1, 2, 3, 4, 5, 6], 'covariance_type': ['full', 'tied', 'diag', 'spherical']}
             model = GaussianMixture()
             print("开始网格搜索")
-            gs = GridSearchCV(model, param_grid=param_grid, cv=5).fit(x_data, y_data)
+            gs = GridSearchCV(model, param_grid=param_grid, cv=5, ).fit(x_data, y_data)
             print("网格搜索完成")
         else:
             print("模型名称输入错误！")
@@ -126,11 +126,11 @@ def get_feature(modelName, database_dir='../database/', output_dir=None, param_g
         args.append(k + '3')
         param_name = args[-6:]
     elif modelName == "GMM":
-        k = args[-2]
-        args[-2] = k + '0'
-        args.insert(-1, k + '1')
-        args.insert(-1, k + '2')
-        args.insert(-1, k + '3')
+        k = args[-1]
+        args[-1] = k + '0'
+        args.append(k + '1')
+        args.append(k + '2')
+        args.append(k + '3')
         param_name = args[-5:]
     feature = pd.DataFrame(feature, columns=[p for p in dir_list])
     param = []
@@ -153,7 +153,7 @@ def get_feature(modelName, database_dir='../database/', output_dir=None, param_g
                 code[3] = 1
                 col += code
             else:
-                col.append(k)
+                col.insert(0,k)
         col = np.array(col).transpose()
         # 添加列
         param.append(col)
