@@ -12,26 +12,22 @@ from sklearn.mixture import GaussianMixture as GMM
 from sklearn.metrics import adjusted_rand_score
 from sklearn.model_selection import cross_val_score
 
-SVM_THRESHOLD = 0.7 # 当SVM分类正确率小于该值时，认为该数据集不合格
+SVM_THRESHOLD = 0.6 # 当SVM分类正确率小于该值时，认为该数据集不合格
 ELASTICNET_THRESHOLD = 0.1 # 当回归计算r2小于该值时，认为数据集不合格
+GMM_THRESHOLD = 0.3 # 当GMM聚类
 
 def main():
     '''
     主函数
     '''
-    # drop_all_na()
-
-    print('SVM')
-    svm_filter()
-    print()
-
-    print('ElasticNet')
-    elastic_net_filter()
-    print()
-
-    print('GMM')
-    gmm_filter()
-    print()
+    print('1. svm 2. elasticnet 3. gmm')
+    choice = int(input('> '))
+    if choice == 1:
+        svm_filter()
+    elif choice == 2:
+        elastic_net_filter()
+    elif choice == 3:
+        gmm_filter()
 
 def svm_filter():
     '''
@@ -41,11 +37,16 @@ def svm_filter():
     OFFSPEC_PATH = '../database/_OffSpec/SVM/'
     datasets = read_dataset(DATASET_PATH)
     for filename in datasets:
-        print(filename, end='')
-        result = svm_cross_validation(datasets[filename])
-        print("得分:", result)
-        if result < SVM_THRESHOLD:
-            shutil.move(DATASET_PATH + filename, OFFSPEC_PATH + filename)
+        print(filename)
+        try:
+            result = svm_cross_validation(datasets[filename])
+            print("得分:", result)
+            if result < SVM_THRESHOLD:
+                shutil.move(DATASET_PATH + filename, OFFSPEC_PATH + filename)
+        except ValueError:
+            print('error')
+        
+        print()
 
 def elastic_net_filter():
     '''
@@ -55,25 +56,27 @@ def elastic_net_filter():
     OFFSPEC_PATH = '../database/_OffSpec/ElasticNet/'
     datasets = read_dataset(DATASET_PATH)
     for filename in datasets:
-        print(filename, end='')
+        print(filename)
         result = elastic_net_cross_validation(datasets[filename])
         print("得分:", result)
         if result < ELASTICNET_THRESHOLD:
             shutil.move(DATASET_PATH + filename, OFFSPEC_PATH + filename)
+        print()
 
 def gmm_filter():
     '''
     筛选GMM数据集
     '''
-    DATASET_PATH = '../database/ElasticNet/'
-    OFFSPEC_PATH = '../database/_OffSpec/ElasticNet/'
+    DATASET_PATH = '../database/GMM/'
+    OFFSPEC_PATH = '../database/_OffSpec/GMM/'
     datasets = read_dataset(DATASET_PATH)
     for filename in datasets:
-        print(filename, end='')
+        print(filename)
         result = gmm_score(datasets[filename])
         print("得分:", result)
-        if result < ELASTICNET_THRESHOLD:
+        if result < GMM_THRESHOLD:
             shutil.move(DATASET_PATH + filename, OFFSPEC_PATH + filename)
+        print()
 
 def svm_cross_validation(dataset):
     '''
@@ -139,7 +142,9 @@ def read_dataset(path):
     '''
     files = os.listdir(path)
     datasets = {}
+    print(files)
     for file in files:
+        print(file)
         dataset = pd.read_csv(path + file, sep=',', skipinitialspace=True)
         datasets[file] = dataset
     return datasets

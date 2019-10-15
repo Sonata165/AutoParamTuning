@@ -1,26 +1,56 @@
 import os
-rootPath = os.path.realpath(__file__).replace('\AutoParamTuning\preprocessing\OneHot.py','')
-initPath = rootPath + os.sep + 'database_init'
-destinyPath = rootPath + os.sep + 'database'
+# rootPath = os.path.realpath(__file__).replace('\AutoParamTuning\preprocessing\OneHot.py','')
+# initPath = rootPath + os.sep + 'database_init'
+# destinyPath = rootPath + os.sep + 'database'
 import numpy as np
 import pandas as pd
 import math
+
+initPath = None
+destinyPath = None
+
+def main():
+    print('1. svm 2. elasticnet 3. gmm')
+    choice = int(input('> '))
+    if choice == 1:
+        one_hot('../database_sample/SVM', '../database/SVM')
+    elif choice == 2:
+        one_hot('../database_sample/ElasticNet', '../database/ElasticNet')
+    elif choice == 3:
+        one_hot('../database_sample/GMM', '../database/GMM')
+
+def one_hot(input_path, output_path):
+    '''
+    将input_path下的数据集进行onehot编码，保存到output_path目录下
+    注意：input_path, output_path末尾没有反斜杠
+    '''
+    print('inputpath:', input_path)
+    work(input_path, output_path)
+
 '''
 work方法
 整体操作
 '''
-def work():
+def work(initPath, destinyPath):
     import os
     files = os.listdir(initPath)
+    print(files)
+    print('shit')
     for filename in files:
         if filename.__contains__('.csv'):
-            singleFileProcessAndWrite(singleFileReadAndProcess(filename),filename)
+            print(filename)
+            # try: 
+            #     singleFileProcessAndWrite(singleFileReadAndProcess(filename),filename)
+            # except ValueError:
+            #     print('error')
+            singleFileProcessAndWrite(destinyPath, singleFileReadAndProcess(initPath, filename),filename)
+            print()
     return
 '''
 处理单个文件
 将数据从文件中读取并进行处理
 '''
-def singleFileReadAndProcess(filename):
+def singleFileReadAndProcess(initPath, filename):
     realPath = initPath + os.sep + filename
     import pandas as pd
     data = pd.read_csv(realPath,encoding = 'gbk').values
@@ -61,7 +91,10 @@ def singleFileReadAndProcess(filename):
                     continue
                 dic[data[i][j]] = cnt
                 cnt = cnt + 1
-            lenth = int(math.log2(cnt - 1)) + 1
+            if cnt == 1:
+                length = 1
+            else:
+                lenth = int(math.log2(cnt - 1)) + 1
             tmp = np.zeros(shape = (lenth,rowNum))
             for i in range(rowNum):
                 things = decimalToBinaryArray(dic[data[i][j]],lenth)
@@ -73,7 +106,7 @@ def singleFileReadAndProcess(filename):
 处理单个文件
 将数据处理并写进文件
 '''
-def singleFileProcessAndWrite(data,filename):
+def singleFileProcessAndWrite(destinyPath, data,filename):
     realPath = destinyPath + os.sep + filename
     finalData = {}
     rowNum = len(data)
@@ -107,7 +140,7 @@ def judge(data,j,rowNum):
     for i in range(rowNum):
         if isnub(data[i][j]) == False:
             return False
-        return True
+    return True
 '''
 判断是不是数字
 '''
@@ -120,8 +153,5 @@ def isnub(s):
 
 
 if __name__ == '__main__':
-    work()
-
-
-
+    main()
 

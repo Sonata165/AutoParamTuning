@@ -4,6 +4,7 @@
 '''
 
 import multiprocessing as mp
+import numpy as np
 from keras.layers import *
 from keras import Model
 import keras
@@ -18,14 +19,15 @@ def read_data(modelName, path="knowledge/"):
     从/knowledge/modelName.csv读取数据
     :param modelName: 模型名称，读取文件的名称
     :param path: 要读取的文件所在的路径
-    :return: train_X, train_y, label顺序按照KnowledgePrepare中get_param_name的顺序，x做标准化处理
+    :return: train_X, train_y, label顺序按照KnowledgePrepare中get_param_name的顺序，x,y做标准化处理
     """
     raw = pd.read_csv(path + modelName + ".csv")
     if modelName == "SVM":
-        y = raw.values[:, -6:]
+        y = StandardScaler().fit_transform(raw.values[:, -6:-4])
+        y = np.hstack((y,raw.values[:, -4:]))
         x = StandardScaler().fit_transform(raw.values[:, :-6])
     elif modelName == "ElasticNet":
-        y = raw.values[:, -2:]
+        y = StandardScaler().fit_transform(raw.values[:, -2:])
         x = StandardScaler().fit_transform(raw.values[:, :-2])
     elif modelName == "GMM":
         y = raw.values[:, -5:]

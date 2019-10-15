@@ -12,12 +12,12 @@ from sklearn.mixture import GaussianMixture as GMM
 from sklearn.metrics import adjusted_rand_score
 from sklearn.model_selection import cross_val_score
 
-# import os
-# params_path = os.path.realpath(__file__).replace('\system\FutherOpt.py','') + os.sep + 'knowledge'
+import os
+params_path = os.path.realpath(__file__).replace('\system\FutherOpt.py','') + os.sep + 'knowledge'
 import sys
+sys.path.append(params_path)
 sys.path.append('knowledge')
-
-import KnowledgePrepare
+import knowledge.KnowledgePrepare
 '''
 均在fin_local_supreme函数刚开始时初始化
 '''
@@ -32,17 +32,16 @@ global tree#存储误差绝对值和segment_tree
 EPSILON = 0.001
 
 def main():
-    dataset = pd.read_csv('system/input/zoo1.csv')
+    dataset = pd.read_csv('input/iris2.csv')
     print(dataset.head())
-    
-    y = dataset.pop('Label')
+    y = dataset['Label']
     X = dataset
 
     model = SVC(gamma='auto')
     scores = cross_val_score(model, X, y, cv=10)
     print(scores.mean())
 
-    a = find_local_supreme(dataset, 'SVM', [1, 1, 'auto'])
+    a = find_local_supreme(dataset, 'SVM', [29, 100])
     print(a)
 
 def find_local_supreme(dataset, alg_name, predicted_param):
@@ -73,7 +72,7 @@ def find_local_supreme(dataset, alg_name, predicted_param):
     tree = [1000000 for x in range(4 * len(predicted_param))]
     tree_init(1,len(predicted_param),1)
     #begin running
-    func()
+    func(1,len(predicted_param),1)
     # return predicted_param
     return tmp_param_list
 
@@ -95,7 +94,8 @@ SVM
 '''
 def env1():
     params = {}
-    names = knowledge.KnowledgePrepare.get_param_name('SVM')
+#    names = knowledge.KnowledgePrepare.get_continuous_para_name('SVM')
+    names = ["C", "gamma"]
     lenth = len(names)
     for i in range(lenth):
         params[names[i]] = tmp_param_list[i]
@@ -130,7 +130,7 @@ def func(l,r,o):
     if l + 1 == r:
         func2(l,r)
         return
-    mid = (l + r) / 2
+    mid = int((l + r) / 2)
     while True:
         func(l,mid,2 * o)
         if check(l,r,o) == True:
@@ -147,8 +147,8 @@ def func2(l,r):
     hill_climb(l,r)
     global last_param_list
     global tmp_param_list
-    x = abs(tmp_param_list[l] - last_param_list[l])
-    y = abs(tmp_param_list[r] - last_param_list[r])
+    x = abs(tmp_param_list[l - 1] - last_param_list[l - 1])
+    y = abs(tmp_param_list[r - 1] - last_param_list[r - 1])
     update(1,len(tmp_param_list),1,l,x)
     update(1,len(tmp_param_list),1,r,y)
     last_param_list = tmp_param_list
@@ -161,7 +161,7 @@ def update(l,r,o,index,value):
     if l == r:
         tree[o] = value
         return
-    mid = (l + r) / 2
+    mid = int((l + r) / 2)
     if index <= mid and index >= l:
         update(l,mid,2 * 0,index,value)
     if index > mid and index <= r:
@@ -175,7 +175,7 @@ def tree_init(l,r,o):
     if l == r:
         tree[o] = 100
         return
-    mid = (l + r) / 2
+    mid = int((l + r) / 2)
     tree_init(l,mid,2 * o)
     tree_init(mid + 1,r,2 * o + 1)
     tree[o] = tree[2 * o] + tree[2 * o + 1]
@@ -204,13 +204,46 @@ def hill_climb(l,r):
 '''
 def func1(index):
     stride = 10
-    x = tmp_param_list[index]
+    x = tmp_param_list[index - 1]
     while stride >= 1:
-        tmp_param_list[index] = x - stride
+        tmp_param_list[index - 1] = x - stride
+        if x - stride <= 0:
+            tmp_param_list[index - 1] = 0.00000001
         a = env()
-        tmp_param_list[index] = x
+        print()
+        print('stride')
+        print(stride)
+        print('abc')
+        print(a)
+        tmp_param_list[index - 1] = x
         b = env()
-        tmp_param_list[index] = x + stride
+        print(b)
+        tmp_param_list[index - 1] = x + stride
+        c = env()
+        print(c)
+        if a > b:
+            x = x - stride
+        elif c > b:
+            x = x + stride
+        else:
+            stride = stride / 2
+        tmp_param_list[index - 1] = x
+        print('temp params')
+        print(tmp_param_list)
+        print()
+    return
+'''
+构建临时func1
+'''
+def tmpfunc1(index):
+    stride = 10
+    x = tmp_param_list[index - 1]
+    while stride >= 1:
+        tmp_param_list[index - 1] = x - stride
+        a = env()
+        tmp_param_list[index - 1] = x
+        b = env()
+        tmp_param_list[index - 1] = x + stride
         c = env()
         if a > b:
             x = x - stride
@@ -218,8 +251,7 @@ def func1(index):
             x = x + stride
         else:
             stride = stride / 2
-    return
-
+    return    
 def svm_cross_validation(dataset,params):
     '''
     SVM交叉验证
@@ -228,7 +260,7 @@ def svm_cross_validation(dataset,params):
     Returns:
       数据集10折交叉验证得分，使用默认的SVM超参数，评估标准：正确率
     '''
-    y = dataset.pop('Label')
+    y = dataset['Label']
     X = dataset
 
     model = SVC(**params)

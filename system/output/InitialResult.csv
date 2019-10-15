@@ -1,2 +1,4 @@
-ParamName,iris1.csv,iris2.csv
-a,-0.089783296,-0.08980719
+FileName,SVM_C,SVM_gamma,SVM_kernel
+sp_0_avila-tr.csv,8.925865173,0.01,rbf
+sp_0_avila-ts.csv,31.35100365,0.02,rbf
+sp_0_connect-4.csv,9517.561523,0.03,sigmoid
