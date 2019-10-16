@@ -3,23 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="18ae106d-e275-4267-8ae5-981b54d43ce8" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/evaluation/ResultEvaluate.py" beforeDir="false" afterPath="$PROJECT_DIR$/evaluation/ResultEvaluate.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowledge/GMM.csv" beforeDir="false" afterPath="$PROJECT_DIR$/knowledge/GMM.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/knowledge/GMM_std_x.json" beforeDir="false" afterPath="$PROJECT_DIR$/knowledge/GMM_std_x.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_covariance_type.h5" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type.h5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_covariance_type_acc.png" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type_acc.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_covariance_type_loss.png" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type_loss.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_covariance_type_mae.png" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type_mae.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_covariance_type_mse.png" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type_mse.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_n_components.h5" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_n_components.h5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_n_components_loss.png" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_n_components_loss.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_n_components_mae.png" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_n_components_mae.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/GMM_n_components_mse.png" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/GMM_n_components_mse.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/network/Thumbs.db" beforeDir="false" afterPath="$PROJECT_DIR$/system/network/Thumbs.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/output/Features.csv" beforeDir="false" afterPath="$PROJECT_DIR$/system/output/Features.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/output/FinalResult.csv" beforeDir="false" afterPath="$PROJECT_DIR$/system/output/FinalResult.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/output/InitialResult.csv" beforeDir="false" afterPath="$PROJECT_DIR$/system/output/InitialResult.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/system/output/time.csv" beforeDir="false" afterPath="$PROJECT_DIR$/system/output/time.csv" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,7 +13,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/Auto_Param_optimize$NetworkPrepareTest.coverage" NAME="NetworkPrepareTest Coverage Results" MODIFIED="1570963794092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/knowledge" />
     <SUITE FILE_PATH="coverage/Auto_Param_optimize$AutoParamTuning.coverage" NAME="AutoParamTuning Coverage Results" MODIFIED="1571245978848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/system" />
-    <SUITE FILE_PATH="coverage/Auto_Param_optimize$ResultEvaluate.coverage" NAME="ResultEvaluate Coverage Results" MODIFIED="1571247831966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/evaluation" />
+    <SUITE FILE_PATH="coverage/Auto_Param_optimize$ResultEvaluate.coverage" NAME="ResultEvaluate Coverage Results" MODIFIED="1571248152756" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/evaluation" />
     <SUITE FILE_PATH="coverage/Auto_Param_optimize$SysPrepare.coverage" NAME="SysPrepare Coverage Results" MODIFIED="1571245357843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Auto_Param_optimize$test.coverage" NAME="test Coverage Results" MODIFIED="1571240146865" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -52,7 +35,7 @@
         <entry file="file://$PROJECT_DIR$/evaluation/ResultEvaluate.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="170">
-              <caret line="112" selection-start-line="112" selection-end-line="112" />
+              <caret line="61" selection-start-line="61" selection-end-line="61" />
               <folding>
                 <element signature="e#114#123#0" expanded="true" />
               </folding>
@@ -61,19 +44,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/gaussian_mixture.py">
+        <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/base.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="610" selection-start-line="610" selection-end-line="610" />
+            <state relative-caret-position="193">
+              <caret line="191" selection-start-line="191" selection-end-line="191" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/base.py">
+        <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/gaussian_mixture.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="170">
-              <caret line="118" selection-start-line="118" selection-end-line="118" />
+              <caret line="620" selection-start-line="620" selection-end-line="620" />
             </state>
           </provider>
         </entry>
@@ -399,7 +382,7 @@
       <workItem from="1570859749288" duration="1065000" />
       <workItem from="1570927955468" duration="14121000" />
       <workItem from="1570955984479" duration="4991000" />
-      <workItem from="1571231568055" duration="12816000" />
+      <workItem from="1571231568055" duration="13420000" />
     </task>
     <task id="LOCAL-00001" summary="完成神经网络模块中对SVM的测试，其中关于ElasticNet和GMM的label大小、顺序有待确定，对这两个模型有待测试">
       <created>1569938975437</created>
@@ -471,11 +454,18 @@
       <option name="project" value="LOCAL" />
       <updated>1571245401240</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;GMM模型使用有问题">
+      <created>1571247894804</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1571247894804</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="72652000" />
+    <option name="totallyTimeSpent" value="73256000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -507,7 +497,7 @@
       <window_info anchor="right" id="SciView" order="0" sideWeight="0.4921875" weight="0.40191898" />
       <window_info anchor="right" id="Database" order="1" />
       <window_info anchor="right" id="R Packages" order="2" />
-      <window_info anchor="right" id="Run" order="3" sideWeight="0.5078125" side_tool="true" weight="0.45735607" />
+      <window_info anchor="right" id="Run" order="3" sideWeight="0.5078125" side_tool="true" weight="0.45255864" />
       <window_info anchor="right" x="0" y="0" width="434" height="856" id="Documentation" order="4" sideWeight="0.5078125" side_tool="true" weight="0.40191898" />
       <window_info anchor="right" id="R Graphics" order="5" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="6" type="SLIDING" weight="0.4" />
@@ -562,7 +552,8 @@
     <MESSAGE value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;修复局部优化bug" />
     <MESSAGE value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;GMM还差最后一步" />
     <MESSAGE value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;修复GMM网格搜索标注标签错误，修复SysPrepare计算标签错误" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;修复GMM网格搜索标注标签错误，修复SysPrepare计算标签错误" />
+    <MESSAGE value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;GMM模型使用有问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;GMM模型使用有问题" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -582,11 +573,22 @@
           <line>142</line>
           <option name="timeStamp" value="65" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/evaluation/ResultEvaluate.py</url>
+          <line>112</line>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/base.py</url>
+          <line>252</line>
+          <option name="timeStamp" value="72" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
-        <watch expression="self.covariance_type" language="Python" />
+        <watch expression="gmm.fit(X)" language="Python" />
+        <watch expression="gmm.predict(X)" language="Python" />
       </configuration>
     </watches-manager>
   </component>
@@ -604,6 +606,16 @@
       </expression>
     </expressions>
     <expressions id="watch">
+      <expression>
+        <expression-string>gmm.predict(X)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>gmm.fit(X)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>self.covariance_type</expression-string>
         <language-id>Python</language-id>
@@ -641,16 +653,6 @@
       </expression>
       <expression>
         <expression-string>GMM(n_components=params[0], covariance_type=params[1]).fit_predict(X)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>dataset['Label']</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>datasets[filename]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -746,6 +748,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/gaussian_mixture.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="620" selection-start-line="620" selection-end-line="620" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="191" selection-start-line="191" selection-end-line="191" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/knowledge/KnowledgePrepare.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="103">
@@ -753,24 +769,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="118" selection-start-line="118" selection-end-line="118" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/mixture/gaussian_mixture.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="610" selection-start-line="610" selection-end-line="610" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/evaluation/ResultEvaluate.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
-          <caret line="112" selection-start-line="112" selection-end-line="112" />
+          <caret line="61" selection-start-line="61" selection-end-line="61" />
           <folding>
             <element signature="e#114#123#0" expanded="true" />
           </folding>
