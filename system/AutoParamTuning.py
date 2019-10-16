@@ -94,8 +94,10 @@ def main():
             kernel_list = ['linear', 'rbf', 'poly', 'sigmoid']
             result['SVM_kernel'] = kernel_list[index]
         elif alg_name == "ElasticNet":
-            result['ElasticNet_alpha'] = keras.models.load_model('network/ElasticNet_alpha.h5').predict(
-                np.expand_dims(feature_df[filename], 0))[0][0]
+            alpha = keras.models.load_model('network/ElasticNet_alpha.h5').predict(np.expand_dims(feature_df[filename], 0))[0][0]
+            if alpha<=0:
+                alpha = 1e-7
+            result['ElasticNet_alpha'] = alpha
             result['ElasticNet_l1_ratio'] = keras.models.load_model('network/ElasticNet_l1_ratio.h5').predict(
                 np.expand_dims(feature_df[filename], 0))[0][0]
         elif alg_name == "GMM":

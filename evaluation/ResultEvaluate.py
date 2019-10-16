@@ -73,7 +73,8 @@ def main():
     ans_df = pd.DataFrame(ans)
     ans_df.index = ['best_param', 'net_param', 'opt_param', 'best_score', 'predicted_score', 'optimized_score',
             'best_time', 'ours_time']
-    ans_df.to_csv('Result.csv')
+    ans_df = ans_df.T
+    ans_df.to_csv('Result_'+alg+'.csv')
     
     print()
 

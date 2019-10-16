@@ -132,7 +132,7 @@ def reg_net(input_shape, activation=None):
         Dropout(0.2),
         Dense(4, activity_regularizer=keras.regularizers.l1_l2(0.01, 0.01)),
         BatchNormalization(),
-        Activation('tanh'),
+        Activation(activation),
         Dropout(0.2),
         Dense(1)
     ])
@@ -226,7 +226,7 @@ def build_SVM_gamma_nn(input_shape):
     :param input_shape: 输入维度，元组，如有6个feature，则input_shape=(6,)
     :return: compile好的Keras模型
     """
-    return reg_net(input_shape)
+    return reg_net(input_shape,'sigmoid')
 
 
 def build_ElasticNet_alpha_nn(input_shape):
@@ -235,7 +235,7 @@ def build_ElasticNet_alpha_nn(input_shape):
     :param input_shape: 输入维度，元组，如有6个feature，则input_shape=(6,)
     :return: compile好的Keras模型
     """
-    return reg_net(input_shape)
+    return reg_net(input_shape,'relu')
 
 
 def build_ElasticNet_l1ratio_nn(input_shape):
@@ -244,7 +244,7 @@ def build_ElasticNet_l1ratio_nn(input_shape):
     :param input_shape: 输入维度，元组，如有6个feature，则input_shape=(6,)
     :return: compile好的Keras模型
     """
-    return reg_net(input_shape)
+    return reg_net(input_shape,'sigmoid')
 
 
 def build_GMM_covariance_type(input_shape, output_dim):
@@ -264,7 +264,7 @@ def build_GMM_n_components(input_shape):
     :param input_shape: 输入维度，元组
     :return: compile好的Keras模型
     """
-    return reg_net(input_shape)
+    return reg_net(input_shape, 'relu')
 
 
 def Dense_withBN_Dropout(input, units, activation=None):
