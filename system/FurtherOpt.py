@@ -393,10 +393,9 @@ def elastic_net_cross_validation(dataset, params):
     Returns:
       数据集10折交叉验证得分，使用默认的ElasticNet超参数，评估标准：r2
     '''
-    import copy
-    data = copy.deepcopy(dataset)
-    y = data.pop('Label')
-    X = data
+    y = dataset['Label']
+    col = [x for x in dataset.columns if x != 'Label']
+    X = dataset[col]
 
     model = ElasticNet(**params)
     model.fit(X, y)
@@ -414,10 +413,9 @@ def gmm_score(dataset, params):
     Returns:
       数据集聚类结果，使用已知的簇的个数，其他超参数使用默认值，评估标准：adjusted_rand_score
     '''
-    import copy
-    data = copy.deepcopy(dataset)
-    y_true = data.pop('Label')
-    X = data
+    y_true = dataset['Label']
+    col = [x for x in dataset.columns if x != 'Label']
+    X = dataset[col]
 
     y_pred = GMM(**params).fit_predict(X)
 

@@ -1,7 +1,7 @@
-FileName,ElasticNet_alpha,ElasticNet_l1_ratio
-sp_1_blogData_train.csv,1.0001369714736938,0.4650227427482605
-sp_1_Folds5x2_pp.csv,0.35628241300582886,0.36984655261039734
-sp_1_hour.csv,0.404499351978302,0.10150626301765442
-sp_2_7.csv,1.0001369714736938,0.19524076581001282
-sp_2_8.csv,1.0001369714736938,0.4036688208580017
-sp_2_9.csv,1.0001369714736938,0.3243677020072937
+FileName,GMM_covariance_type,GMM_n_components
+sp_0_S06R01.csv,full,3.0
+sp_0_S06R02.csv,full,3.0
+sp_0_S07R01.csv,diag,3.0
+sp_0_training.csv,diag,3.0
+sp_0_waveform-5000_0_2.csv,diag,3.0
+sp_0_waveform-5000_1_2.csv,diag,3.0
