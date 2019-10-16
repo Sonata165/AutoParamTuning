@@ -40,7 +40,7 @@ def main():
         get_feature(modelName)
     else:
         pass
-    print('生成完成！')
+    print('特征和标签计算完成！')
 
     time.sleep(1)
     print("准备神经网络训练数据")
