@@ -203,9 +203,9 @@ def hill_climb(l,r):
 一元爬山法
 '''
 def func1(index):
-    stride = 10
+    stride = 1
     x = tmp_param_list[index - 1]
-    while stride >= 1:
+    while stride >= 0.01:
         tmp_param_list[index - 1] = x - stride
         if x - stride <= 0:
             tmp_param_list[index - 1] = 0.00000001

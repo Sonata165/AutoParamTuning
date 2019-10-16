@@ -12,17 +12,13 @@ import os
 import time
 import numpy as np
 import pandas as pd
-import sys
 import keras
 from math import *
-# from tensorflow import keras
-# sys.path.append('knowledge')
 
 import system.FeatureCalc
 import system.FurtherOpt
 import knowledge.KnowledgePrepare
-import knowledge.CalculateLabels
-from knowledge import KnowledgePrepare, CalculateLabels, NetworkPrepare
+from knowledge import KnowledgePrepare, NetworkPrepare
 from system import FeatureCalc, FurtherOpt
 
 
@@ -57,7 +53,7 @@ def main():
     print('特征计算完成!')
     feature_df.to_csv('output/Features.csv', index=False)
     
-    '''对特征进行反标准化'''
+    '''对特征进行标准化'''
     
     std_x = None
     if alg_name == "SVM":
@@ -72,10 +68,10 @@ def main():
     data = feature_df.values
     for i in range(0,data.shape[0]):
         for j in range(1,data.shape[1]):
-            data[i][j] = data[i][j] * sqrt(std_x['var'][j]) + std_x['mean'][j]
+            data[i][j] = (data[i][j] - std_x['mean'][i]) / sqrt(std_x['var'][i])
     feature_df = pd.DataFrame(data, index=feature_df.index, columns=feature_df.columns)
     print(feature_df)
-    print('反标准化完成！')
+    print('标准化完成！')
     
     ''' 将特征送入神经网络计算得到预测结果 '''
     

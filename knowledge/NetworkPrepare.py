@@ -26,26 +26,30 @@ def read_data(modelName, path="knowledge/"):
     if modelName == "SVM":
         std_x = StandardScaler()
         x = std_x.fit_transform(raw.values[:, :-6])
-        # y = raw.values[:, -6:]
-        std_y = StandardScaler()
-        y = std_y.fit_transform(raw.values[:, -6:-4])
-        y = np.hstack((y, raw.values[:, -4:]))
-        with open("knowledge/" + 'SVM_std_y.json', 'w') as f:
-            json.dump({'mean': std_y.mean_.tolist(), 'var': std_y.var_.tolist()}, f)
-
         with open("knowledge/" + 'SVM_std_x.json', 'w') as f:
             json.dump({'mean': std_x.mean_.tolist(), 'var': std_x.var_.tolist()}, f)
+
+        y = raw.values[:, -6:]
+        # 为了方便用户使用，不进行标签标准化
+        # std_y = StandardScaler()
+        # y = std_y.fit_transform(raw.values[:, -6:-4])
+        # y = np.hstack((y, raw.values[:, -4:]))
+        # with open("knowledge/" + 'SVM_std_y.json', 'w') as f:
+        #     json.dump({'mean': std_y.mean_.tolist(), 'var': std_y.var_.tolist()}, f)
+
+
     elif modelName == "ElasticNet":
         std_x = StandardScaler()
         x = std_x.fit_transform(raw.values[:, :-2])
-        # y = raw.values[:, -2:]
-        std_y = StandardScaler()
-        y = std_y.fit_transform(raw.values[:, -2:])
-        with open("knowledge/" + 'Elastic_std_y.json', 'w') as f:
-            json.dump({'mean': std_y.mean_.tolist(), 'var': std_y.var_.tolist()}, f)
-
         with open("knowledge/" + 'Elastic_std_x.json', 'w') as f:
             json.dump({'mean': std_x.mean_.tolist(), 'var': std_x.var_.tolist()}, f)
+
+        y = raw.values[:, -2:]
+        # std_y = StandardScaler()
+        # y = std_y.fit_transform(raw.values[:, -2:])
+        # with open("knowledge/" + 'Elastic_std_y.json', 'w') as f:
+        #     json.dump({'mean': std_y.mean_.tolist(), 'var': std_y.var_.tolist()}, f)
+
     elif modelName == "GMM":
         std_x = StandardScaler()
         x = std_x.fit_transform(raw.values[:, :-5])
