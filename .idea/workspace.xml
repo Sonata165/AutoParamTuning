@@ -242,6 +242,17 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="完成神经网络模块中对SVM的测试，其中关于ElasticNet和GMM的label大小、顺序有待确定，对这两个模型有待测试" />
     <MESSAGE value="修复SVM.csv和GMM.csv中标签列名错误&#10;完成GMM测试&#10;&#10;注：多进程训练入口必须写作如下形式&#10;if __name__ == '__main__':&#10;    freeze_support()" />
