@@ -104,8 +104,8 @@ def calculate_common_features(dataset):
     pca = PCA(4)
     dataset = pd.DataFrame(pca.fit_transform(dataset))
     stat = dataset.describe().transpose()
-    print(dataset.head())
-    print(stat)
+    # print(dataset.head())
+    # print(stat)
 
     mean1 = stat['std'][0]
     mean2 = stat['std'][1]

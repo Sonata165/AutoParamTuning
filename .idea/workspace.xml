@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="18ae106d-e275-4267-8ae5-981b54d43ce8" name="Default Changelist" comment="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;将神经网训练数据X的标准化方向从样本标准化改为特征标准化">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/GMM_data_Generator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/evaluation/CalculateLabels.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/evaluation/Result.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowledge/ElasticNet.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowledge/Elastic_std_x.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowledge/Elastic_std_y.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowledge/GMM.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowledge/GMM_std_x.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowledge/SVM_std_x.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/knowledge/SVM_std_y.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/preprocessing/OneHot_cbz.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/preprocessing/OneHot_ols.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/preprocessing/Preconditioning.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/preprocessing/Sampling.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/ElasticNet_alpha.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/ElasticNet_alpha_loss.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/ElasticNet_alpha_mae.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/ElasticNet_alpha_mse.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/ElasticNet_l1_ratio.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/ElasticNet_l1_ratio_loss.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/ElasticNet_l1_ratio_mae.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/ElasticNet_l1_ratio_mse.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type_acc.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type_loss.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type_mae.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_covariance_type_mse.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_n_components.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_n_components_loss.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_n_components_mae.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/GMM_n_components_mse.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_C.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_C_loss.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_C_mae.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_C_mse.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_gamma.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_gamma_loss.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_gamma_mae.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_gamma_mse.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_kernel.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_kernel_acc.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_kernel_loss.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_kernel_mae.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/SVM_kernel_mse.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/network/Thumbs.db" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/output/time.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/system/tempCodeRunnerFile.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/knowledge/tempCodeRunnerFile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Auto_Param_optimize.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Auto_Param_optimize.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SysPrepare.py" beforeDir="false" afterPath="$PROJECT_DIR$/SysPrepare.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/evaluation/ResultEvaluate.py" beforeDir="false" afterPath="$PROJECT_DIR$/evaluation/ResultEvaluate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowledge/KnowledgePrepare.py" beforeDir="false" afterPath="$PROJECT_DIR$/knowledge/KnowledgePrepare.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowledge/NetworkPrepare.py" beforeDir="false" afterPath="$PROJECT_DIR$/knowledge/NetworkPrepare.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowledge/SVM.csv" beforeDir="false" afterPath="$PROJECT_DIR$/knowledge/SVM.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knowledge/nn.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing/DatasetFilter.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing/DatasetFilter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing/OneHot.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/AutoParamTuning.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/AutoParamTuning.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/FeatureCalc.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/FeatureCalc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/FurtherOpt.py" beforeDir="false" afterPath="$PROJECT_DIR$/system/FurtherOpt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/input/iris1.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/input/iris2.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/input/sp_0_avila-tr.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/input/sp_0_avila-ts.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/input/sp_0_connect-4.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/network/SvmModel.h5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/output/Features.csv" beforeDir="false" afterPath="$PROJECT_DIR$/system/output/Features.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/output/FinalResult.csv" beforeDir="false" afterPath="$PROJECT_DIR$/system/output/FinalResult.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/system/output/InitialResult.csv" beforeDir="false" afterPath="$PROJECT_DIR$/system/output/InitialResult.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/knowledge/NetworkPrepareTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/test/knowledge/NetworkPrepareTest.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/Auto_Param_optimize$NetworkPrepareTest.coverage" NAME="NetworkPrepareTest Coverage Results" MODIFIED="1570963794092" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test/knowledge" />
+    <SUITE FILE_PATH="coverage/Auto_Param_optimize$AutoParamTuning.coverage" NAME="AutoParamTuning Coverage Results" MODIFIED="1571231871874" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/system" />
+    <SUITE FILE_PATH="coverage/Auto_Param_optimize$ResultEvaluate.coverage" NAME="ResultEvaluate Coverage Results" MODIFIED="1571236735521" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/evaluation" />
+    <SUITE FILE_PATH="coverage/Auto_Param_optimize$test.coverage" NAME="test Coverage Results" MODIFIED="1570288499570" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="Auto_Param_optimize" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/evaluation/ResultEvaluate.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="567">
+              <caret line="75" column="19" selection-start-line="75" selection-start-column="19" selection-end-line="75" selection-end-column="19" />
+              <folding>
+                <element signature="e#114#123#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/system/AutoParamTuning.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="193">
+              <caret line="134" selection-start-line="134" selection-end-line="135" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SysPrepare.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-644" />
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/evaluation/ResultEvaluate.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="953" />
+    <option name="width" value="974" />
+    <option name="height" value="1047" />
+  </component>
+  <component name="ProjectId" id="1SDFAKWGMB6WtbS0LnXakWXymlB" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Auto_Param_optimize" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Auto_Param_optimize" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Auto_Param_optimize" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Auto_Param_optimize" type="462c0819:PsiDirectoryNode" />
+              <item name="evaluation" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Auto_Param_optimize" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Auto_Param_optimize" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\zkx74\PycharmProjects\Auto_Param_optimize\test\knowledge" />
+      <recent name="C:\Users\zkx74\PycharmProjects\Auto_Param_optimize\test" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zkx74\PycharmProjects\Auto_Param_optimize\database" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.ResultEvaluate">
+    <configuration name="AutoParamTuning" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Auto_Param_optimize" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/system" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/system/AutoParamTuning.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="NetworkPrepareTest" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Auto_Param_optimize" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/test/knowledge" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test/knowledge/NetworkPrepareTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="ResultEvaluate" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Auto_Param_optimize" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/evaluation" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/evaluation/ResultEvaluate.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="SysPrepare" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Auto_Param_optimize" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SysPrepare.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="Auto_Param_optimize" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.ResultEvaluate" />
+        <item itemvalue="Python.AutoParamTuning" />
+        <item itemvalue="Python.SysPrepare" />
+        <item itemvalue="Python.NetworkPrepareTest" />
+        <item itemvalue="Python.test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="18ae106d-e275-4267-8ae5-981b54d43ce8" name="Default Changelist" comment="" />
+      <created>1569284804151</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1569284804151</updated>
+      <workItem from="1569284805787" duration="4846000" />
+      <workItem from="1569390685994" duration="43000" />
+      <workItem from="1569720386886" duration="1202000" />
+      <workItem from="1569722570457" duration="60000" />
+      <workItem from="1569833574817" duration="9665000" />
+      <workItem from="1569934843339" duration="73000" />
+      <workItem from="1569934943448" duration="7532000" />
+      <workItem from="1570285675715" duration="6410000" />
+      <workItem from="1570521916132" duration="350000" />
+      <workItem from="1570602907866" duration="371000" />
+      <workItem from="1570603324365" duration="660000" />
+      <workItem from="1570810013739" duration="4596000" />
+      <workItem from="1570847320518" duration="1751000" />
+      <workItem from="1570857368419" duration="1545000" />
+      <workItem from="1570858977340" duration="14000" />
+      <workItem from="1570859050785" duration="541000" />
+      <workItem from="1570859749288" duration="1065000" />
+      <workItem from="1570927955468" duration="14121000" />
+      <workItem from="1570955984479" duration="4991000" />
+      <workItem from="1571231568055" duration="5118000" />
+    </task>
+    <task id="LOCAL-00001" summary="完成神经网络模块中对SVM的测试，其中关于ElasticNet和GMM的label大小、顺序有待确定，对这两个模型有待测试">
+      <created>1569938975437</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1569938975437</updated>
+    </task>
+    <task id="LOCAL-00002" summary="修复SVM.csv和GMM.csv中标签列名错误&#10;完成GMM测试&#10;&#10;注：多进程训练入口必须写作如下形式&#10;if __name__ == '__main__':&#10;    freeze_support()">
+      <created>1570290673513</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1570290673513</updated>
+    </task>
+    <task id="LOCAL-00003" summary="修复SVM.csv和GMM.csv中标签列名错误&#10;完成GMM测试&#10;准备搭建自编码器&#10;&#10;注：多进程训练入口必须写作如下形式&#10;if __name__ == '__main__':&#10;    freeze_support()">
+      <created>1570291561586</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1570291561587</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py">
+      <created>1570293698454</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1570293698454</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;将神经网训练数据X的标准化方向从样本标准化改为特征标准化">
+      <created>1570811879015</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1570811879015</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="64954000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.5127932" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" order="1" />
+      <window_info anchor="bottom" id="Version Control" order="2" />
+      <window_info anchor="bottom" id="Python Console" order="3" />
+      <window_info anchor="bottom" id="Terminal" order="4" />
+      <window_info anchor="bottom" id="Event Log" order="5" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="6" />
+      <window_info anchor="bottom" id="Find" order="7" />
+      <window_info anchor="bottom" id="Debug" order="8" weight="0.39955357" />
+      <window_info anchor="bottom" id="Cvs" order="9" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="10" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="11" />
+      <window_info anchor="right" id="Database" order="0" />
+      <window_info anchor="right" id="R Packages" order="1" />
+      <window_info active="true" anchor="right" id="Run" order="2" side_tool="true" visible="true" weight="0.45735607" />
+      <window_info anchor="right" x="0" y="0" width="434" height="856" id="Documentation" order="3" side_tool="true" weight="0.32995737" />
+      <window_info anchor="right" id="SciView" order="4" />
+      <window_info anchor="right" id="R Graphics" order="5" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="6" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="7" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="8" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="RECENTLY_FILTERED_USER_GROUPS">
+                <collection />
+              </option>
+              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+                <collection />
+              </option>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="完成神经网络模块中对SVM的测试，其中关于ElasticNet和GMM的label大小、顺序有待确定，对这两个模型有待测试" />
+    <MESSAGE value="修复SVM.csv和GMM.csv中标签列名错误&#10;完成GMM测试&#10;&#10;注：多进程训练入口必须写作如下形式&#10;if __name__ == '__main__':&#10;    freeze_support()" />
+    <MESSAGE value="修复SVM.csv和GMM.csv中标签列名错误&#10;完成GMM测试&#10;准备搭建自编码器&#10;&#10;注：多进程训练入口必须写作如下形式&#10;if __name__ == '__main__':&#10;    freeze_support()" />
+    <MESSAGE value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py" />
+    <MESSAGE value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;将神经网训练数据X的标准化方向从样本标准化改为特征标准化" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'master' of https://github.com/Sonata165/AutoParamTuning&#10;&#10;# Conflicts:&#10;#&#9;system/FeatureCalc.py&#10;将神经网训练数据X的标准化方向从样本标准化改为特征标准化" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://C:/ProgramData/Anaconda3/Lib/site-packages/sklearn/model_selection/_search.py</url>
+          <line>722</line>
+          <option name="timeStamp" value="61" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/evaluation/ResultEvaluate.py</url>
+          <line>56</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="data[i][j] * sqrt(std_x['var'][j]) + std_x['mean'][j]" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>path=='../database/SVM/sp_0_covtype.csv'</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>path=='../ database / SVM / sp_0_covtype.csv'</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="watch">
+      <expression>
+        <expression-string>data[i][j] * sqrt(std_x['var'][j]) + std_x['mean'][j]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>sqrt(std_x['var'][j])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>data[i][j]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>std_x['mean'][j]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>std_x['var'][j]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>open(&quot;../knowledge/&quot; + 'GMM_std_x.json', 'r')</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>data * sqrt(std_x['var'][1]) + std_x['mean'][1]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>std_x</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>sqrt(std_x['var'][1])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>data * sqrt(std_x['var']) + std_x['mean']</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+    <expressions id="setValue">
+      <expression>
+        <expression-string>&lt;class 'dict'&gt;: {'SVM_C': 0.91482854, 'SVM_gamma': 0.0, 'SVM_kernel': 'sigmoid'}</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>&lt;class 'dict'&gt;: {'sp_0_avila-tr.csv':      intercolumnar distance  ...    Label
+0                  0.290762  ...        0
+1                 -0.091897  ...        1
+2                  0.142636  ...        0
+3                  0.216699  ...        0
+4                 -0.116585  ...        2
+5                 -0.202992  ...        3
+6                  0.043885  ...        0
+7                  0.056229  ...        0
+8                 -3.498799  ...        0
+9                 -0.128929  ...        0
+10                 0.907954  ...        4
+11                 0.043885  ...        5
+12                -0.005490  ...        6
+13                 0.105604  ...        0
+14                 0.364825  ...        6
+15                 0.142636  ...        2
+16                -0.153617  ...        7
+17                 0.216699  ...        0
+18                -0.030178  ...        5
+19                -0.141273  ...        3
+20                 0.031541  ...        2
+21                -0.227680  ...      ...</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/SysPrepare.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-644" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/system/AutoParamTuning.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="134" selection-start-line="134" selection-end-line="135" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/evaluation/CalculateLabels.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1794">
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/evaluation/ResultEvaluate.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="567">
+          <caret line="75" column="19" selection-start-line="75" selection-start-column="19" selection-end-line="75" selection-end-column="19" />
+          <folding>
+            <element signature="e#114#123#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
