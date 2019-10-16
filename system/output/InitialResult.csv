@@ -1,7 +1,7 @@
 FileName,GMM_covariance_type,GMM_n_components
-sp_0_S06R01.csv,full,3.0
+sp_0_S05R02.csv,spherical,3.0
+sp_0_S06R01.csv,diag,3.0
 sp_0_S06R02.csv,full,3.0
-sp_0_S07R01.csv,diag,3.0
-sp_0_training.csv,diag,3.0
-sp_0_waveform-5000_0_2.csv,diag,3.0
-sp_0_waveform-5000_1_2.csv,diag,3.0
+sp_0_spambase.csv,full,3.0
+sp_0_training.csv,full,3.0
+sp_0_waveform-5000_0_2.csv,full,3.0

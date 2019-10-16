@@ -1,3 +1,3 @@
-sp_0_S06R01.csv,sp_0_S06R02.csv,sp_0_S07R01.csv,sp_0_training.csv,sp_0_waveform-5000_0_2.csv,sp_0_waveform-5000_1_2.csv
-full,full,diag,diag,diag,diag
+sp_0_S05R02.csv,sp_0_S06R01.csv,sp_0_S06R02.csv,sp_0_spambase.csv,sp_0_training.csv,sp_0_waveform-5000_0_2.csv
+spherical,diag,full,full,full,full
 3.0,3.0,3.0,3.0,3.0,3.0
