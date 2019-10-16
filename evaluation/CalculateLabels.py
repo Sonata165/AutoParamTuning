@@ -108,7 +108,7 @@ def calculate_labels(alg, dataset):
         print(gs.best_params_)
         res = gs.best_params_
         print()
-        return [[res['covariance_type']], res['n_components']]
+        return [res['covariance_type'], res['n_components']]
 
 def read_dataset(path):
     '''

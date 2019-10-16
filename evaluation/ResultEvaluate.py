@@ -108,10 +108,7 @@ def score(alg, params, dataset):
     elif alg == 'GMM':
         X = dataset.copy()
         y = X.pop('Label')
-        print(str(params[0][0]))
-        gmm = GMM(n_components=params[1], covariance_type=params[0][0])
-        gmm.fit(X)
-        y_pred = gmm.predict(X)
+        y_pred=GMM(n_components=int(float(params[1])), covariance_type=params[0]).fit_predict(X)
         ret = adjusted_rand_score(y, y_pred)
     return ret
 
