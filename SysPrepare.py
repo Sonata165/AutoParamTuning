@@ -36,7 +36,7 @@ def main():
     #     'kernel': ['rbf'],
     #     'C': r_C,
     #     'gamma': r_gamma}
-    if input == 'y':
+    if choice == 'y':
         get_feature(modelName)
     else:
         pass

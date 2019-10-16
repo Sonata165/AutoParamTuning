@@ -91,7 +91,7 @@ def get_feature(modelName, database_dir='../database/', output_dir=None, param_g
             param_grid = {'n_components': [1, 2, 3, 4, 5, 6], 'covariance_type': ['full', 'tied', 'diag', 'spherical']}
             model = GaussianMixture()
             print("开始网格搜索")
-            gs = GridSearchCV(model, param_grid=param_grid, cv=5, ).fit(x_data, y_data)
+            gs = GridSearchCV(model, param_grid=param_grid, cv=5, scoring='adjusted_rand_score').fit(x_data, y_data)
             print("网格搜索完成")
         else:
             print("模型名称输入错误！")
