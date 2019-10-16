@@ -10,66 +10,72 @@
 import os
 import sys
 import time
+import warnings
+
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import ElasticNet
+from sklearn.metrics import adjusted_rand_score
 from sklearn.svm import SVC
 from sklearn.model_selection import cross_val_score
+from sklearn.mixture import GaussianMixture as GMM
 
-sys.path.append('knowledge')
+from evaluation import CalculateLabels
 
-import CalculateLabels
-
+warnings.filterwarnings('ignore')
 
 def main():
     print('1. svm 2. elasticnet 3. gmm')
     choice = int(input('> '))
     if choice == 1:
         alg = 'SVM'
-        INPUTPATH = '../database/SVM/'
     elif choice == 2:
         alg = 'ElasticNet'
-        INPUTPATH = '../database/ElasticNet/'
     elif choice == 3:
         alg = 'GMM'
-        INPUTPATH = '../database/GMM/'
 
-    our_time = pd.read_csv('system/output/time.csv').iloc[2]
+    print(os.listdir('../system/input/'))
+    datasets = read_dataset('../system/input/')
 
-    datasets = read_dataset('system/input/')
+    predicted_df = pd.read_csv('../system/output/InitialResult.csv')
+    x = predicted_df.pop('FileName')
+    predicted_df.index = x
+    predicted_df = predicted_df.transpose()
+    # print(predicted_df)
+
+    optimized_df = pd.read_csv('../system/output/FinalResult.csv')
+    # print(optimized_df)
+
     ans = {}
     for file in datasets:
         print(file)
         t1 = time.time()
         best_param = CalculateLabels.calculate_labels(alg, datasets[file])
+        print(best_param)
         t2 = time.time()
-        ours_param1, ours_param2 = get_our_param(file)
+        predicted_param = list(predicted_df[file])
+        optimized_param = list(optimized_df[file])
+        print(predicted_param)
+        print(optimized_param)
+
         best_score = score(alg, best_param, datasets[file])
-        ours_score1 = score(alg, ours_param1, datasets[file])
-        ours_score2 = score(alg, ours_param2, datasets[file])
+        predicted_score = score(alg, predicted_param, datasets[file])
+        optimized_score = score(alg, optimized_param, datasets[file])
+        print(predicted_score, optimized_score)
+        print()
         best_time = t2 - t1
-        ours_time = our_time[file]
-        ans[file] = [best_param, ours_param1, ours_param2, best_score, ours_score1, ours_score2,
+
+        time_consuming = pd.read_csv('system/output/time.csv').iloc[2]
+        ours_time = time_consuming[file]
+        ans[file] = [best_param, ours_param1, ours_param2, best_score, predicted_score, furtheropt_score,
             best_time, ours_time]
         print()
     ans_df = pd.DataFrame(ans)
-    ans_df.index = ['best_param', 'ours_param1', 'ours_param2', 'best_score', 'ours_score1', 'ours_score2',
+    ans_df.index = ['best_param', 'ours_param1', 'ours_param2', 'best_score', 'predicted_score', 'optimized_score',
             'best_time', 'ours_time']
     ans_df.to_csv('evaluation/Result.csv')
     
     print()
-
-def get_our_param(file):
-    '''
-    从系统的输出文件中获取对应数据集的参数
-    Parameters:
-      file - 数据集名称
-    Returns:
-      神经网络结果，一个参数的列表
-      进一步优化结果，一个参数的列表
-    '''
-    param1 = pd.read_csv('system/output/InitialResult.csv')
-    param2 = pd.read_csv('system/output/FinalResult.csv')
-    return (list(param1[file]), list(param2[file]))
 
 def score(alg, params, dataset):
     '''
@@ -80,20 +86,29 @@ def score(alg, params, dataset):
       dataset - 一个用户数据集，类型: DataFrame
     '''
     if alg == 'SVM':
-        print(dataset.head())
         X = dataset.copy()
         y = X.pop('Label')
-        if params[0] < 0:
-            params[0] = 2**-10
-        if params[1] < 0:
-            params[1] = 2**-10
-        model = SVC(C=params[0], gamma=params[1])
+        t1 = float(params[0])
+        t2 = float(params[1])
+        t3 = params[2]
+        if t1 < 0:
+            t1 = 2**-10
+        if t2 < 0:
+            t2 = 2**-10
+        model = SVC(C=t1, gamma=t2, kernel=t3)
         scores = cross_val_score(model, X, y, cv=5)
         ret = scores.mean()
     elif alg == 'ElasticNet':
-        print()
+        X = dataset.copy()
+        y = X.pop('Label')
+        model = ElasticNet(alpha=params[0], l1_ratio=params[1])
+        scores = cross_val_score(model, X, y, cv=5)
+        ret = scores.mean()
     elif alg == 'GMM':
-        print()
+        X = dataset.copy()
+        y = X.pop('Label')
+        y_pred = GMM(n_components=params[0], covariance_type=params[1]).fit_predict(X)
+        ret = adjusted_rand_score(y, y_pred)
     return ret
 
 def read_dataset(path):
