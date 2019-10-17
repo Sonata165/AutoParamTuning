@@ -76,43 +76,76 @@ def main():
     ans = pd.DataFrame()
     time_consume = {}  # 保存用时，第一行是神经网络时间，第二行是进一步优化时间，第三行是总时间
 
-    for filename in datasets:
-        print(filename)
-        time_consume[filename] = []
-        t1 = time.time()  # 放入神经网络前的时间点
 
-        # 读取神经网
-        result = {}
-        if alg_name == "SVM":
-            result['SVM_C'] = \
-                keras.models.load_model('network/SVM_C.h5').predict(np.expand_dims(feature_df[filename], 0))[0][0]
-            result['SVM_gamma'] = \
-                keras.models.load_model('network/SVM_gamma.h5').predict(np.expand_dims(feature_df[filename], 0))[0][
-                    0]
-            index = np.argmax(keras.models.load_model('network/SVM_kernel.h5').predict(
-                np.expand_dims(feature_df[filename], 0))[0])
+
+    if alg_name == "SVM":
+        model_C = keras.models.load_model('network/SVM_C.h5')
+        model_gamma = keras.models.load_model('network/SVM_gamma.h5')
+        model_kernel = keras.models.load_model('network/SVM_kernel.h5')
+        for filename in datasets:
+            print(filename)
+            time_consume[filename] = []
+            nn_time_cnt = 0
+            result = {}
+            t1 = time.time()
+
+            result['SVM_C'] = model_C.predict(np.expand_dims(feature_df[filename], 0))[0][0]
+            result['SVM_gamma'] = model_gamma.predict(np.expand_dims(feature_df[filename], 0))[0][0]
+            index = np.argmax(model_kernel.predict(np.expand_dims(feature_df[filename], 0))[0])
             kernel_list = ['linear', 'rbf', 'poly', 'sigmoid']
             result['SVM_kernel'] = kernel_list[index]
-        elif alg_name == "ElasticNet":
-            alpha = keras.models.load_model('network/ElasticNet_alpha.h5').predict(np.expand_dims(feature_df[filename], 0))[0][0]
+
+            t2 = time.time()
+            nn_time_cnt += t2 - t1
+            print(result)
+            ans = ans.append(pd.Series(result, name=filename))
+            time_consume[filename].append(nn_time_cnt)
+
+    elif alg_name == "ElasticNet":
+        model_alpha = keras.models.load_model('network/ElasticNet_alpha.h5')
+        model_l1_ratio = keras.models.load_model('network/ElasticNet_l1_ratio.h5')
+        for filename in datasets:
+            print(filename)
+            time_consume[filename] = []
+            nn_time_cnt = 0
+            result = {}
+            t1 = time.time()
+
+            alpha = model_alpha.predict(np.expand_dims(feature_df[filename], 0))[0][0]
             if alpha<=0:
                 alpha = 1e-7
             result['ElasticNet_alpha'] = alpha
-            result['ElasticNet_l1_ratio'] = keras.models.load_model('network/ElasticNet_l1_ratio.h5').predict(
-                np.expand_dims(feature_df[filename], 0))[0][0]
-        elif alg_name == "GMM":
-            components = int(keras.models.load_model('network/GMM_n_components.h5').predict(
-                np.expand_dims(feature_df[filename], 0))[0][0])
+            result['ElasticNet_l1_ratio'] = model_l1_ratio.predict(np.expand_dims(feature_df[filename], 0))[0][0]
+
+            t2 = time.time()
+            nn_time_cnt += t2 - t1
+            print(result)
+            ans = ans.append(pd.Series(result, name=filename))
+            time_consume[filename].append(nn_time_cnt)
+
+    elif alg_name == "GMM":
+        model_n_components = keras.models.load_model('network/GMM_n_components.h5')
+        model_covariance_type = keras.models.load_model('network/GMM_covariance_type.h5')
+        for filename in datasets:
+            print(filename)
+            time_consume[filename] = []
+            nn_time_cnt = 0
+            result = {}
+            t1 = time.time()
+
+            components = int(model_n_components.predict(np.expand_dims(feature_df[filename], 0))[0][0])
             result['GMM_n_components'] = 1 if components == 0 else components
-            index = np.argmax(keras.models.load_model('network/GMM_covariance_type.h5').predict(
-                np.expand_dims(feature_df[filename], 0))[0])
+            index = np.argmax(model_covariance_type.predict(np.expand_dims(feature_df[filename], 0))[0])
             covariance_list = ['full', 'tied', 'diag', 'spherical']
             result['GMM_covariance_type'] = covariance_list[index]
-        print(result)
-        ans = ans.append(pd.Series(result, name=filename))
 
-        t2 = time.time()  # 放入神经网络后的时间点
-        time_consume[filename].append(t2 - t1)
+            t2 = time.time()
+            nn_time_cnt += t2 - t1
+            print(result)
+            ans = ans.append(pd.Series(result, name=filename))
+            time_consume[filename].append(nn_time_cnt)
+
+
     print('神经网络预测结果为：')
     ans.index.name = 'FileName'
     print(ans)

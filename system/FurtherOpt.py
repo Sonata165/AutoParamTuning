@@ -297,9 +297,9 @@ def hill_climb(l, r):
 
 
 def func1(index):
-    stride = 1
+    stride = 0.25
     x = tmp_param_list[index - 1]
-    while stride >= 0.05:
+    while stride >= 0.03:
         print("stride =", stride)
         tmp_param_list[index - 1] = x - stride
         if algorithm_type == 1:

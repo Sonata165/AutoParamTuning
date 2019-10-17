@@ -53,6 +53,7 @@ def main():
         best_param = CalculateLabels.calculate_labels(alg, datasets[file])
         print(best_param)
         t2 = time.time()
+        print(predicted_df)
         predicted_param = list(predicted_df[file])
         optimized_param = list(optimized_df[file])
         print(predicted_param)
