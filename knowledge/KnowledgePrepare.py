@@ -108,7 +108,8 @@ def get_feature(modelName, database_dir='../database/', output_dir=None, param_g
         # 读取数据
         data = pd.read_csv(path)
         # 计算数据集特征并合并存储
-        temp = np.array(calculate_features(modelName, data))
+        # temp = np.array(calculate_features(modelName, data))
+        temp = np.array(calculate_features_nn(data))
         if feature is None:
             feature = temp.reshape(temp.shape[0], 1)
         else:
@@ -162,7 +163,7 @@ def get_feature(modelName, database_dir='../database/', output_dir=None, param_g
     # 合并
     res = pd.concat([feature, param], axis=0, ignore_index=True)
     # 添加FeatureName列
-    name = get_feature_name(modelName) + param_name
+    name = get_feature_name() + param_name
     name_col = pd.DataFrame(np.array(name).reshape((len(name), 1)))
     res = pd.concat([name_col, res], axis=1, ignore_index=True)
     # 保存特征和超参数

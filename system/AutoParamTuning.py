@@ -41,15 +41,20 @@ def main():
 
     ''' 计算数据集特征并保存到Features.csv '''
     feature_df = pd.DataFrame()
-    feature_names = FeatureCalc.get_feature_name(alg_name)
+    feature_names = FeatureCalc.get_feature_name()
+    print(len(feature_names))
     feature_df['FeatureName'] = feature_names
     for filename in datasets:  # filename是各数据集名
-        features = FeatureCalc.calculate_features(alg_name, datasets[filename])
+        # features = FeatureCalc.calculate_features(alg_name, datasets[filename])
+        features = FeatureCalc.calculate_features_nn(datasets[filename])
+        print(len(features))
         feature_df[filename] = features
     # print('用户数据集特征：')
     # print(feature_df)
     print('特征计算完成!')
     feature_df.to_csv('output/Features.csv', index=False)
+
+    return
 
     '''对特征进行标准化'''
 
